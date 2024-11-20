@@ -7,7 +7,7 @@ const Gift = () => {
             <Helmet>
                 <title>Gift Cards | Tata StarBucks</title>
             </Helmet>
-            <div className='max-w-[1440px] m-auto px-10 py-2 text-slate-700 '>Home {'>'} Gift Cards</div>
+            <div className='m-auto px-10 py-2 max-w-[1440px] text-slate-700'>{'Home > Gift Cards'}</div>
         </main>
     )
 }
