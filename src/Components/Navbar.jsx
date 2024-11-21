@@ -5,22 +5,22 @@ import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <header className="border-b-2 pb-2">
-      <nav className="flex max-w-[1440px] m-auto items-center justify-between py-3 pt-6 px-10">
-        <div className="flex gap-14 items-center">
+    <header className="pb-2 border-b-2">
+      <nav className="flex justify-between items-center m-auto px-10 py-3 pt-6 max-w-[1440px]">
+        <div className="flex items-center gap-14">
           <img className="w-10" src="https://www.starbucks.in/assets/icon/logo.png" alt="logo" />
           <div className="flex gap-14 text-slate-600">
-            <NavLink to="/">Home</NavLink>
-            <NavLink to="/giftCards">Gift</NavLink>
-            <NavLink to="/ordering">Order</NavLink>
-            <NavLink to="/pay">Pay</NavLink>
-            <NavLink to="/store-locator">Store</NavLink>
+            <NavLink className='hover:text-green-700' to="/">Home</NavLink>
+            <NavLink className='hover:text-green-700' to="/giftCards">Gift</NavLink>
+            <NavLink className='hover:text-green-700' to="/ordering">Order</NavLink>
+            <NavLink className='hover:text-green-700' to="/pay">Pay</NavLink>
+            <NavLink className='hover:text-green-700' to="/store-locator">Store</NavLink>
           </div>
         </div>
         <div className="flex items-center gap-20">
-          <div className="flex items-center border-2 rounded-3xl shadow-3xl w-[235px]">
+          <div className="flex items-center border-2 shadow-3xl rounded-3xl w-[235px]">
             <BiSearch className="ml-3" size={20} />
-            <input className="py-2 px-2 w-full rounded-3xl outline-none placeholder:text-xs" type="text" placeholder="Looking for something specific?" />
+            <input className="px-2 py-2 rounded-3xl w-full placeholder:text-xs outline-none" type="text" placeholder="Looking for something specific?" />
           </div>
           <div>
             <PiUserCircle size={34} />
