@@ -1,9 +1,9 @@
 import { Navigation } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import BannerSection from '../BannerSection';
-import { banner } from '../../Data/Banner';
+import BannerSection from './BannerSection';
+import { banner } from '../Data/Banner';
 import 'swiper/css/navigation';
-import './swiper.css';
+import './SwiperCss/Swiper.css';
 import 'swiper/css'
 
 const SwiperSection = () => {

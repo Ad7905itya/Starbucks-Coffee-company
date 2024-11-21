@@ -1,5 +1,5 @@
 import HandCraft from './HandCraft';
-import SwiperSection from './SwiperCss/SwiperSection';
+import SwiperSection from './SwiperSection';
 
 const Home = () => {
     return (
