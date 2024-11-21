@@ -10,7 +10,7 @@ const SwiperSection = () => {
     return (
         <section className='m-auto max-w-[1440px] h-60'>
             <div className='m-auto mt-14 w-[80%] h-full'>
-                <Swiper navigation={true} n modules={[Navigation]} className="m-auto w-[1000px] h-full mySwiper">
+                <Swiper navigation={true} modules={[Navigation]} className="m-auto w-[1000px] h-full mySwiper">
                     <SwiperSlide>
                         <BannerSection Banner={banner[0]} />
                     </SwiperSlide>
