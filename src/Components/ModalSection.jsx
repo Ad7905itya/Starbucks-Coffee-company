@@ -15,8 +15,9 @@ const ModalSection = ({Data}) => {
                     <p className="text-[10px] uppercase">Milk</p>
                 </div>: ''}
                 <p className="pt-2 pb-4 text-slate-500 text-xs">{Data.description}</p>
-                <h2 className="pt-2 pb-4">₹ <span className="font-bold">{Data.price}</span>.{Data.priceInCoin}</h2>
+                <h2 className="pt-2 pb-10">₹ <span className="font-bold">{Data.price}</span>.{Data.priceInCoin}</h2>
             </div>
+            <img src="https://www.starbucks.in/assets/images/dots_gold.svg" loading="lazy" className="bottom-0 left-0 absolute w-8" alt="" />
         </div>
     )
 }
