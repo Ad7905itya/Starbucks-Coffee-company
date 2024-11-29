@@ -38,10 +38,9 @@
     background: #198754;
 }
 
-:where(.css-dev-only-do-not-override-1x0dypw).ant-modal .ant-modal-content {
-    padding: 0;
-    border-radius: 12px;
+.ant-modal-content{
+    --ant-modal-content-padding: 0;
     overflow: hidden;
-    width: 600px;
-    left: -60px;
+    --ant-border-radius-lg: 12px;
 }
+
