@@ -23,13 +23,12 @@ const Home = () => {
         <main>
             <section className='bg-[#1e3932] px-5 font-[sans-serif] text-white cursor-pointer'>
                 <Link to={'/rewards'}>
-                    <div className='flex justify-between items-center m-auto px-8 w-full max-w-[1240px] h-20'>
-                        <h5 className='font-thin text-lg tracking-widest'>StarBucks</h5>
+                    <div className='flex justify-end items-center m-auto px-8 w-full max-w-[1260px] h-20'>
                         <p className='border-2 border-white px-3 py-2 rounded-3xl text-xs'>Know More</p>
                     </div>
                 </Link>
             </section>
-            <section className='m-auto px-8 max-w-[1240px] h-60'>
+            <section className='m-auto px-8 max-w-[1320px] h-60'>
                 <div className='m-auto mt-6 w-full h-full'>
                     <Swiper
                         navigation={true}
@@ -50,7 +49,7 @@ const Home = () => {
                 <div className='m-auto max-w-[1240px] h-60'>
                     <img className='top-0 right-0 absolute w-14' src="https://www.starbucks.in/assets/icon/greyleafright.svg" alt="greyLeafright" />
                     <div className='flex justify-between py-7'>
-                        <h1 className='font-bold text-2xl'>Barista Recommends</h1>
+                        <h1 className='font-bold text-[#25453d] text-2xl'>Barista Recommends</h1>
                         <p className='font-bold text-[#00754a] text-sm cursor-pointer'>View Menu</p>
                     </div>
                     <div className='m-auto mb-10 max-w-[1240px]'>
@@ -59,7 +58,7 @@ const Home = () => {
                             slidesPerView={3}
                             spaceBetween={20}
                             modules={[Navigation]}
-                            className="m-auto w-[840px] h-full mySwiper2">
+                            className="mx-auto h-full mySwiper2">
                             {BaristaData.map((item, i) =>
                                 <SwiperSlide key={i}>
                                     <Barista key={i} item={item} />
@@ -72,7 +71,7 @@ const Home = () => {
             <section className='relative bg-[#edebe9] mt-10 px-8 min-h-[450px]'>
                 <div className='m-auto max-w-[1240px] h-60'>
                     <div className='flex justify-between py-7'>
-                        <h1 className='font-bold text-2xl'>Learn more about the world of coffee!</h1>
+                        <h1 className='font-bold text-[#25453d] text-2xl'>Learn more about the world of coffee!</h1>
                         <p className='font-bold text-[#00754a] text-sm cursor-pointer'>Discover More</p>
                     </div>
                     <div style={{ backgroundImage: `url(${LazyImageLoad})` }} className='relative bg-cover bg-center shadow-inner p-6 rounded-xl w-full min-h-80 transition-all cursor-pointer'>
