@@ -7,7 +7,7 @@ import Order from "./Components/Order";
 import Pay from "./Components/Pay";
 import Store from "./Components/Store";
 import StarbucksRewards from "./Components/StarbucksRewards";
-import PromotionsBannerDetail from "./Components/PromotionsbannerDetail";
+import PromotionsBannerDetail from "./Components/PromotionsBannerDetail";
 
 function App() {
   return (
