@@ -1,8 +1,41 @@
 .active{
-    color: rgb(0, 90, 0);
+    color: #279b5b;
     font-weight: 600;
-    padding-bottom: 10px;
-    border-bottom: 2px solid rgb(0,90,0);
+    border-bottom: 2px solid #279b5b;
+}
+.active-2{
+    color: #279b5b;
+    font-weight: 600;
+}
+
+
+.gift{
+    position: relative;
+    border: none;
+}
+
+.gift:hover{
+    border: none;
+}
+
+.gift::after{
+    content: '';
+    position: absolute;
+    width: 0px;
+    height: 2px;
+    left: 50%;
+    bottom:0;
+    background-color: #279b5b;
+    transition: all ease-in-out .2s;
+}
+.active-2::after{
+    width: 100%;
+    left: 0;
+}
+
+.gift:hover::after{
+    width: 100%;
+    left: 0;
 }
 
 .swiper {
@@ -44,3 +77,14 @@
     --ant-border-radius-lg: 12px;
 }
 
+.shadow-inner {
+    --tw-shadow: inset 0 -150px 20px 0 rgb(0,0,0,0.6);
+}
+
+.shadow-inner:hover{
+    --tw-shadow: inset 0 -150px 20px 0 rgb(0,0,0,0.6),inset 0 -350px 20px 0 rgb(0,0,0,0.4);
+}
+
+.transition-all{
+    transition-duration: 0.5s;
+}

@@ -6,17 +6,21 @@ import Gift from "./Components/Gift";
 import Order from "./Components/Order";
 import Pay from "./Components/Pay";
 import Store from "./Components/Store";
+import StarbucksRewards from "./Components/StarbucksRewards";
+import PromotionsBannerDetail from "./Components/PromotionsbannerDetail";
 
 function App() {
   return (
     <BrowserRouter>
-    <Navbar />
+      <Navbar />
       <Routes>
-        <Route path="/" element={<Home />}/>
-        <Route path="/giftCards" element={<Gift />}/>
-        <Route path="/ordering" element={<Order />}/>
-        <Route path="/pay" element={<Pay />}/>
-        <Route path="/store-locator" element={<Store />}/>
+        <Route path="/" element={<Home />} />
+        <Route path="/giftCards" element={<Gift />} />
+        <Route path="/ordering" element={<Order />} />
+        <Route path="/pay" element={<Pay />} />
+        <Route path="/store-locator" element={<Store />} />
+        <Route path="/rewards" element={<StarbucksRewards />} />
+        <Route path="/banner-detail" element={<PromotionsBannerDetail />} />
       </Routes>
     </BrowserRouter>
   );

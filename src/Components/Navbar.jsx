@@ -5,10 +5,10 @@ import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <header className="pb-2 border-b-2">
+    <header className="top-0 z-10 sticky bg-white pb-2 border-b-2">
       <nav className="flex justify-between items-center m-auto px-10 py-2 pt-5 max-w-[1300px]">
         <div className="flex items-center gap-14">
-          <img className="w-10" src="https://www.starbucks.in/assets/icon/logo.png" alt="logo" />
+          <img className="w-10" loading="lazy" src="https://www.starbucks.in/assets/icon/logo.png" alt="logo" />
           <div className="flex gap-14 text-slate-600">
             <NavLink className='hover:text-green-700' to="/">Home</NavLink>
             <NavLink className='hover:text-green-700' to="/giftCards">Gift</NavLink>
