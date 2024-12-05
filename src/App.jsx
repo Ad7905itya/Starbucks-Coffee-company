@@ -8,6 +8,7 @@ import Pay from "./Components/Pay";
 import Store from "./Components/Store";
 import StarbucksRewards from "./Components/StarbucksRewards";
 import PromotionsBannerDetail from "./Components/PromotionsBannerDetail";
+import ProfileUser from "./Components/ProfileUser";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/store-locator" element={<Store />} />
         <Route path="/rewards" element={<StarbucksRewards />} />
         <Route path="/banner-detail" element={<PromotionsBannerDetail />} />
+        <Route path="/profile" element={<ProfileUser />} />
       </Routes>
     </BrowserRouter>
   );

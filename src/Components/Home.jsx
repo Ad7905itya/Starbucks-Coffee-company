@@ -12,17 +12,31 @@ import React, { useEffect, useState } from 'react';
 import Footer from './Footer';
 import { Link } from 'react-router-dom';
 
+export const CustomizeSwiper = ({ isOpen, className, slide, spaceBetween, children }) => {
+    return (
+        <Swiper
+            navigation={isOpen}
+            slidesPerView={slide}
+            spaceBetween={spaceBetween}
+            modules={[Navigation]}
+            className={className}>
+            {children}
+        </Swiper>
+    )
+}
+
 const Home = () => {
-    const [LazyImageLoad, setLazyImageLoad] = useState('')
+    const [LazyImageLoad, setLazyImageLoad] = useState('');
     const url = 'https://preprodtsbstorage.blob.core.windows.net/cms/uploads/ICW_Live_Event_Day5_41f11ca3d2.jpg';
 
     useEffect(() => {
         setLazyImageLoad(url);
     }, [])
+
     return (
         <main>
             <section className='bg-[#1e3932] px-5 font-[sans-serif] text-white cursor-pointer'>
-                <Link to={'/rewards'}>
+                <Link to="/rewards">
                     <div className='flex justify-end items-center m-auto px-8 w-full max-w-[1260px] h-20'>
                         <p className='border-2 border-white px-3 py-2 rounded-3xl text-xs'>Know More</p>
                     </div>
@@ -30,9 +44,10 @@ const Home = () => {
             </section>
             <section className='m-auto px-8 max-w-[1320px] h-60'>
                 <div className='m-auto mt-6 w-full h-full'>
-                    <Swiper
-                        navigation={true}
-                        modules={[Navigation]}
+                    <CustomizeSwiper
+                        isOpen={true}
+                        slide={1}
+                        spaceBetween={10}
                         className="m-auto w-[1240px] h-full mySwiper">
                         {banner.map((item, i) => {
                             return (
@@ -41,7 +56,7 @@ const Home = () => {
                                 </SwiperSlide>
                             )
                         })}
-                    </Swiper>
+                    </CustomizeSwiper>
                 </div>
             </section>
             <HandCraft />
@@ -53,18 +68,17 @@ const Home = () => {
                         <p className='font-bold text-[#00754a] text-sm cursor-pointer'>View Menu</p>
                     </div>
                     <div className='m-auto mb-10 max-w-[1240px]'>
-                        <Swiper
-                            navigation={true}
-                            slidesPerView={3}
+                        <CustomizeSwiper
+                            isOpen={true}
+                            slide={3}
                             spaceBetween={20}
-                            modules={[Navigation]}
-                            className="mx-auto h-full mySwiper2">
+                            className="mx-auto h-full mySwiper1">
                             {BaristaData.map((item, i) =>
                                 <SwiperSlide key={i}>
                                     <Barista key={i} item={item} />
                                 </SwiperSlide>
                             )}
-                        </Swiper>
+                        </CustomizeSwiper>
                     </div>
                 </div>
             </section>

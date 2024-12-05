@@ -42,7 +42,7 @@ const Barista = ({ item }) => {
               <p className='text-[9px] text-slate-600'>{item.subTitle}</p>
             </div>
           </div>
-          <div className='flex justify-between items-center mt-5 ml-2 w-[300px]'>
+          <div className='flex justify-between items-center mt-5 ml-2 max-w-[300px]'>
             <p className='text-[14px]'>₹ <span className='mr-[1px] font-bold'>{item.price}</span><span>.{item.priceInCoin}</span></p>
             <button className='bg-[#00754a] hover:bg-[#1e3932] shadow-4xl px-5 py-[6px] rounded-3xl font-bold text-[12px] text-white'>Add Item</button>
           </div>

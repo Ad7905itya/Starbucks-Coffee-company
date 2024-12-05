@@ -1,7 +1,7 @@
 import React from "react";
 import { BiSearch } from "react-icons/bi";
 import { PiUserCircle } from "react-icons/pi";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const Navbar = () => {
   return (
@@ -23,7 +23,7 @@ const Navbar = () => {
             <input className="px-2 py-2 rounded-3xl w-full placeholder:text-xs outline-none" type="text" placeholder="Looking for something specific?" />
           </div>
           <div>
-            <PiUserCircle size={34} color="grey" fontWeight={200} />
+            <Link to={'/profile'}><PiUserCircle size={34} color="grey" fontWeight={200} /></Link>
           </div>
         </div>
       </nav>
