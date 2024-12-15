@@ -39,7 +39,7 @@ const Gift = () => {
             <section className='min-h-52'>
                 <div className='border-gray-400 px-8 border-b-[1px]'>
                     <div className='m-auto max-w-[1240px]'>
-                        <h1 className='py-2 font-bold text-2xl'>{CategorySelection === "Featured" ? "Anytime" : CategorySelection}</h1>
+                        <h1 className='py-2 font-bold text-2xl'>{CategorySelection === "Featured" ? "AnyTime" : CategorySelection}</h1>
                     </div>
                 </div>
                 <div className='gap-14 grid grid-cols-3 m-auto mt-8 mb-20 px-10 max-w-[1240px]'>

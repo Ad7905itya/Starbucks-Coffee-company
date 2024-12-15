@@ -37,8 +37,8 @@ const Home = () => {
         <main>
             <section className='bg-[#1e3932] px-5 font-[sans-serif] text-white cursor-pointer'>
                 <Link to="/rewards">
-                    <div className='flex justify-end items-center m-auto px-8 w-full max-w-[1260px] h-20'>
-                        <p className='border-2 border-white px-3 py-2 rounded-3xl text-xs'>Know More</p>
+                    <div className='flex justify-end items-center m-auto px-8 w-full max-w-[1260px] h-16'>
+                        <p className='border-[1px] border-white px-5 py-[6px] rounded-3xl text-[10px]'>Know More</p>
                     </div>
                 </Link>
             </section>

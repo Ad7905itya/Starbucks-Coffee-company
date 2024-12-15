@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import StarBoxContent from './StarBoxContent'
+import { ConfigProvider, Modal } from 'antd'
+import LoginModal from './LoginPage/LoginModal'
 
 const PromotionsBannerDetail = () => {
+    const [Open, setOpen] = useState(false);
     return (
         <main>
             <section className='m-auto max-w-[1240px]'>
@@ -18,7 +21,7 @@ const PromotionsBannerDetail = () => {
                         <p className='text-[#00b050]'>Book your subscription Today!</p>
                     </div>
                     <div className='flex justify-center mt-10'>
-                        <button className='bg-[#00754a] hover:bg-[#1e3932] px-28 py-2 rounded-3xl font-bold text-[12px] text-white'>Login To view offers</button>
+                        <button onClick={()=> setOpen(true)} className='bg-[#00754a] hover:bg-[#1e3932] px-28 py-2 rounded-3xl font-bold text-[12px] text-white'>Login To view offers</button>
                     </div>
                 </div>
                 <div className="border-gray-300 border-b-2">
@@ -55,10 +58,15 @@ const PromotionsBannerDetail = () => {
                         <StarBoxContent>Once subscription offer is availed, it cannot be transferred, substituted and / or exchanged for cash or with other articles or returned.</StarBoxContent>
 
                         <StarBoxContent>Customizations & Size upgrades are not included in redemption. Members will need to pay separately for the same.</StarBoxContent>
-                        
+
                         <StarBoxContent>The terms and conditions of the “Offer for Beverage Subscription at Starbucks India” shall be in addition to and not in substitution/derogation to the Primary Terms and Conditions of Tata Starbucks.</StarBoxContent>
                     </div>
                 </div>
+                <ConfigProvider theme={{ cssVar: true }}>
+                    <Modal open={Open} footer={false} closeIcon={false} width={600}>
+                        <LoginModal setOpen={setOpen} />
+                    </Modal>
+                </ConfigProvider>
             </section>
         </main>
     )
