@@ -41,7 +41,7 @@ function Layout() {
         <Route path="/registration">
           <Route element={<CreateAccount />} index />
           <Route path="verification" element={<Verification />} />
-          <Route path="personaldetails" element={<PersonalDetails />} />
+          <Route path="personalDetails" element={<PersonalDetails />} />
         </Route>
         <Route path="/welcome" element={<Welcome />} />
         <Route path="/rewards" element={<StarbucksRewards />} />

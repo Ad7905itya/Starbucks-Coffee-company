@@ -4,6 +4,7 @@ import "./Verification.css"
 import { ConfigProvider, Flex, Input, Modal } from 'antd'
 import { createPortal } from 'react-dom'
 import { useSessionStorage } from '../../Hooks/useSessionStorage'
+import { Link } from 'react-router-dom'
 
 
 const Verification = () => {
@@ -14,6 +15,7 @@ const Verification = () => {
     const [CheckBtn, setCheckBtn] = useState(false);
     const [SubmitData, setSubmitData] = useState("");
     const [Open, setOpen] = useState(true);
+    const [nextPage, setNxtPage] = useState(false);
 
     const OTPGenerate = () => {
         const digits = "0123456789";
@@ -67,7 +69,7 @@ const Verification = () => {
                 setInvalidPortal(false);
             }, 3000);
         } else {
-            location.href = 'http://localhost:5173/registration/personaldetails'
+            setNxtPage(true);
         }
     }
 
@@ -106,7 +108,9 @@ const Verification = () => {
                                 <span onClick={HandleChange} className='ml-1 text-[#00754a] underline cursor-pointer'>Resend</span></p>
                         </div>
                         <div className='flex justify-center mt-20 mb-20'>
-                            {CheckBtn ? <button className='bg-[#00754a] hover:bg-[#1e3932] px-6 py-3 rounded-3xl w-[330px] font-bold text-white text-xs'>Confirm</button> :
+                            {CheckBtn ? nextPage ? <Link to={"/registration/personaldetails"}>
+                                <button className='bg-[#00754a] hover:bg-[#1e3932] px-6 py-3 rounded-3xl w-[330px] font-bold text-white text-xs'>Confirm</button></Link> :
+                                <button className='bg-[#00754a] hover:bg-[#1e3932] px-6 py-3 rounded-3xl w-[330px] font-bold text-white text-xs'>Confirm</button> :
                                 <button className='bg-[#000000a8] active:bg-[#1e3932] opacity-60 px-6 py-3 rounded-3xl w-[330px] text-[#c7c7c7] text-xs'>Confirm</button>}
                         </div>
                     </form>
