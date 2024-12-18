@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { useLocalStorage } from '../../Hooks/useLocalStorage'
 import "./Verification.css"
 import { ConfigProvider, Flex, Input, Modal } from 'antd'
 import { createPortal } from 'react-dom'
+import { useSessionStorage } from '../../Hooks/useSessionStorage'
 
 
 const Verification = () => {
-    const [ReceiveData] = useLocalStorage("CreateSubmitData");
+    const [ReceiveData] = useSessionStorage("CreateSubmitData");
     const [TimeRemain, setTimeRemain] = useState(20);
     const [InvalidPortal, setInvalidPortal] = useState(false);
     const [OptNumber, setOptNumber] = useState('');

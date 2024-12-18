@@ -14,7 +14,7 @@ const Barista = ({ item }) => {
   function detail() {
     return (
       <>
-        <img src="https://www.starbucks.in/assets/icon/greyleafright.svg" loading="lazy" className="top-0 right-0 absolute w-16" alt="" />
+        <img src="https://www.starbucks.in/assets/icon/greyleafright.svg" loading="lazy" className="top-0 right-0 absolute w-12 lg:w-16" alt="" />
         <div className="flex flex-col items-start gap-1">
           <img src={Data.IconImage} loading="lazy" />
           <h1 className="font-bold text-lg">{Data.title}</h1>
@@ -31,20 +31,20 @@ const Barista = ({ item }) => {
   }
 
   return (
-    <div className='mx-4'>
-      <div className='bg-white shadow-5xl rounded-xl w-full h-full cursor-pointer'>
-        <div className='px-5 py-4'>
+    <div className='mx-1 lg:mx-4'>
+      <div className='bg-white shadow-5xl rounded-xl w-full h-full min-h-[130px] lg:min-h-[150px] cursor-pointer'>
+        <div className='px-3 lg:px-5 py-3 lg:py-4'>
           <div className='flex gap-2'>
-            <img onClick={HandleOk} className='rounded-xl w-20 h-20' src={item.image} alt="" />
-            <div className='flex flex-col items-start'>
-              <img className='w-5 h-5' src={item.IconImage} alt="" />
-              <h1 className='font-bold text-lg text-wrap'>{item.title}</h1>
-              <p className='text-[9px] text-slate-600'>{item.subTitle}</p>
+            <img onClick={HandleOk} className='rounded-xl w-14 lg:w-20 h-14 lg:h-20' src={item.image} alt="" />
+            <div className='flex flex-col items-start gap-1'>
+              <img className='w-3 h-3' src={item.IconImage} alt="" />
+              <h1 className='font-bold text-[12px] text-wrap lg:text-sm'>{item.title}</h1>
+              <p className='text-[7px] text-slate-600 lg:text-[9px]'>{item.subTitle}</p>
             </div>
           </div>
           <div className='flex justify-between items-center mt-5 ml-2 max-w-[300px]'>
             <p className='text-[14px]'>₹ <span className='mr-[1px] font-bold'>{item.price}</span><span>.{item.priceInCoin}</span></p>
-            <button className='bg-[#00754a] hover:bg-[#1e3932] shadow-4xl px-5 py-[6px] rounded-3xl font-bold text-[12px] text-white'>Add Item</button>
+            <button className='bg-[#00754a] hover:bg-[#1e3932] shadow-4xl px-5 py-[6px] rounded-3xl font-bold text-[8px] text-white lg:text-[12px]'>Add Item</button>
           </div>
         </div>
         <ConfigProvider

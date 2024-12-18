@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import LoginInput from '../LoginPage/LoginInput'
-import { useLocalStorage } from '../../Hooks/useLocalStorage'
+const LoginInput = React.lazy(()=> import('../LoginPage/LoginInput'));
+import { useSessionStorage } from '../../Hooks/useSessionStorage'
 import { Link } from 'react-router-dom'
 
 const CreateAccount = () => {
@@ -9,7 +9,7 @@ const CreateAccount = () => {
     const [value, setValue] = useState("");
     const [password, setPassword] = useState("");
     const [SubmitBtn, setSubmitBtn] = useState(false);
-    const [SubmitData, setSubmitData] = useLocalStorage("CreateSubmitData", {})
+    const [SubmitData, setSubmitData] = useSessionStorage("CreateSubmitData", {})
     const [errorPassword, setErrorPassword] = useState({
         character: "",
         uppercase: "",
@@ -132,22 +132,22 @@ const CreateAccount = () => {
             <Helmet>
                 <title>Login | Tata Starbucks</title>
             </Helmet>
-            <div className='m-auto px-10 py-2 max-w-[1320px] font-[Rubik] text-slate-700 text-sm self-start'>{'Home > Create An Account'}</div>
+            <div className='lg:block hidden m-auto px-10 py-2 max-w-[1320px] font-[Rubik] text-slate-700 text-sm self-start'>{'Home > Create An Account'}</div>
             <section className='flex flex-col gap-10 bg-[#1e3932]'>
-                <div className='relative h-40'>
+                <div className='relative h-20 lg:h-40'>
                     <img className='bottom-0 left-0 absolute' src="https://www.starbucks.in/assets/icon/green_ldots.svg" alt="" loading='lazy' />
                     <img className='top-0 right-0 absolute' src="https://www.starbucks.in/assets/icon/green_rleaf.svg" alt="" loading='lazy' />
                 </div>
             </section>
             <section className='relative -top-8 bg-white pt-24 rounded-t-2xl min-h-60'>
                 <div className='flex flex-col items-center'>
-                    <img className='m-auto px-10 max-w-[1320px]' src="https://www.starbucks.in/assets/icon/signup_process1.svg" alt="" loading='lazy' />
+                    <img className='m-auto px-5 lg:px-10 w-full sm:max-w-[800px] lg:max-w-[1320px]' src="https://www.starbucks.in/assets/icon/signup_process1.svg" alt="" loading='lazy' />
                     <div className="border-gray-300 border-b-2 w-full">
-                        <h1 className="m-auto mt-2 py-4 max-w-[1240px] font-[600] font-[Rubik] text-xl">Login to Starbucks</h1>
+                        <h1 className="m-auto mt-2 px-5 py-4 max-w-[800px] lg:max-w-[1240px] font-[600] font-[Rubik] text-xl">Login to Starbucks</h1>
                     </div>
                 </div>
-                <form className='m-auto px-10 py-2 max-w-[1320px]' onSubmit={(e) => e.preventDefault()}>
-                    <div className='gap-x-20 gap-y-5 grid grid-cols-2'>
+                <form className='m-auto px-10 py-2 max-w-[800px] lg:max-w-[1320px]' onSubmit={(e) => e.preventDefault()}>
+                    <div className='gap-x-20 gap-y-5 grid grid-cols-1 lg:grid-cols-2'>
                         <div>
                             <LoginInput
                                 Header="EMAIL ID"

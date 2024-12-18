@@ -2,33 +2,44 @@ import { ConfigProvider, Modal } from "antd";
 import React, { useState } from "react";
 import { PiUserCircle } from "react-icons/pi";
 import { Link, NavLink } from "react-router-dom";
+import SearchInput from './SearchInput'
 import LoginModal from "../LoginPage/LoginModal";
-import SearchInput from "./SearchInput";
+import { useLocalStorage } from "../../Hooks/useLocalStorage";
 
 const Navbar = () => {
   const [Open, setOpen] = useState(false);
+  const [SearchValue, setSearchValue] = useState('');
+  const [isLoginUser] = useLocalStorage('User', {});
   return (
     <header className="top-0 z-10 sticky bg-white pb-2 border-b-2">
-      <nav className="flex justify-between items-center m-auto px-10 py-2 pt-5 max-w-[1300px]">
-        <div className="flex items-center gap-14">
+      <nav className="flex lg:flex-row flex-col justify-between items-center gap-5 m-auto px-10 py-2 pt-0 lg:pt-5 w-full max-w-[800px] lg:max-w-[1300px]">
+        <div className="flex lg:flex-row flex-col items-center gap-8 lg:gap-14">
           <img className="w-10" loading="lazy" src="https://www.starbucks.in/assets/icon/logo.png" alt="logo" />
           <div className="flex gap-14 text-slate-600">
             <NavLink className='hover:text-green-700' to="/">Home</NavLink>
             <NavLink className='hover:text-green-700' to="/giftCards">Gift</NavLink>
             <NavLink className='hover:text-green-700' to="/ordering">Order</NavLink>
-            <p className='hover:text-green-700 cursor-pointer' onClick={() => setOpen(true)}>Pay</p>
+            {Object.keys(isLoginUser).length ?
+              <NavLink className='hover:text-green-700' to="/pay">Pay</NavLink> :
+              <p className='hover:text-green-700 cursor-pointer' onClick={() => setOpen(true)}>Pay</p>}
+
             <NavLink className='hover:text-green-700' to="/store-locator">Store</NavLink>
           </div>
         </div>
-        <div className="flex items-center gap-20">
-          <SearchInput placeholder="Looking for something specific?" />
+        <div className="flex lg:flex-row flex-col items-center gap-5 lg:gap-20 w-full lg:w-auto">
+          <SearchInput
+            value={SearchValue}
+            name="searchbar"
+            id="searchbar"
+            onChange={(e) => setSearchValue(e.target.value)}
+            placeholder="Looking for something specific?" />
           <div>
             <Link to={'/profile'}><PiUserCircle size={34} color="grey" fontWeight={200} /></Link>
           </div>
         </div>
       </nav>
-      <ConfigProvider theme={{cssVar: true}}>
-        <Modal open={Open} footer={false} closeIcon={false} width={600}>
+      <ConfigProvider theme={{ cssVar: true }}>
+        <Modal open={Open} footer={false} closeIcon={false} width={innerWidth > 700 ? 600 : 400}>
           <LoginModal setOpen={setOpen} />
         </Modal>
       </ConfigProvider>

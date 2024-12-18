@@ -4,12 +4,18 @@ import { Helmet } from 'react-helmet-async'
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { Checkbox, ConfigProvider } from 'antd';
+import { useLocalStorage } from '../../Hooks/useLocalStorage';
+import { useSessionStorage } from '../../Hooks/useSessionStorage';
+import './Verification.css'
+import { Link } from 'react-router-dom';
 
 const PersonalDetails = () => {
     const [CalenderOpen, setCalenderOpen] = useState(false);
     const [calendarValue, setCalendarValue] = useState("");
-    const [SubmitBtn, setSubmitBtn] = useState(false);
+    const [SubmitBtn, setSubmitBtn] = useState({ FirstName: "", LastName: "", BirthDate: "" });
     const [errors, setErrors] = useState({ firstName: '', lastName: '', BirthDate: "" });
+    const [Data] = useSessionStorage('CreateSubmitData');
+    const [user, setUser] = useLocalStorage('User', {})
     const [CheckBoxValue, setCheckBoxValue] = useState({});
     const [PersonalData, setPersonalData] = useState({
         firstName: "",
@@ -33,12 +39,21 @@ const PersonalDetails = () => {
 
     const onFirstNameBlur = (e) => {
         const inputValue = e.target.value
+        let isAlphabetic = /^[a-zA-Z]*$/g.test(inputValue);
         if (!inputValue) {
             errors.firstName = "First name is required!";
-        } else if (inputValue && inputValue.length < 3) {
+        } else if (inputValue && !isAlphabetic) {
             errors.firstName = "Numbers & Special characters are not allowed. Please try again.";
+        } else if (inputValue && inputValue.length < 3) {
+            errors.firstName = "your First Name is Short";
         } else {
             errors.firstName = ""
+        }
+
+        if (inputValue && !errors.firstName) {
+            setSubmitBtn({ ...SubmitBtn, FirstName: inputValue });
+        } else {
+            setSubmitBtn({ ...SubmitBtn, FirstName: "" });
         }
 
         setPersonalData(prev => ({ ...prev, firstName: inputValue }))
@@ -47,12 +62,21 @@ const PersonalDetails = () => {
 
     const onLastNameBlur = (e) => {
         const inputValue = e.target.value
+        let isAlphabetic = /^[a-zA-Z]*$/g.test(inputValue);
         if (!inputValue) {
             errors.lastName = "Last name is required!";
-        } else if (inputValue && inputValue.length < 3) {
+        } else if (inputValue && !isAlphabetic) {
             errors.lastName = "Numbers & Special characters are not allowed. Please try again.";
+        } else if (inputValue && inputValue.length < 3) {
+            errors.lastName = "your First Name is Sort";
         } else {
             errors.lastName = ""
+        }
+
+        if (inputValue && !errors.lastName) {
+            setSubmitBtn({ ...SubmitBtn, LastName: inputValue });
+        } else {
+            setSubmitBtn({ ...SubmitBtn, LastName: "" });
         }
 
         setPersonalData(prev => ({ ...prev, lastName: inputValue }))
@@ -60,16 +84,21 @@ const PersonalDetails = () => {
     }
 
     const onChangeBirth = (e) => {
-        const inputValue = e.target.value
-        if (!inputValue) {
+        if (!calendarValue) {
             errors.BirthDate = "Please select date";
         } else {
             errors.BirthDate = ""
         }
 
-        setPersonalData(prev => ({ ...prev, BirthDate: calendarValue }))
+        if (calendarValue && !errors.BirthDate) {
+            setSubmitBtn({ ...SubmitBtn, BirthDate: calendarValue });
+        } else {
+            setSubmitBtn({ ...SubmitBtn, BirthDate: "" });
+        }
+
         setErrors(errors);
     }
+
     const onClick = (e) => {
         e.stopPropagation()
         setCalenderOpen(true);
@@ -134,8 +163,7 @@ const PersonalDetails = () => {
                         placeholder="DD-MM-YYYY *"
                         myValue={calendarValue}
                         onChange={onChangeBirth}
-                        onBlur={onChangeBirth}
-                        onInput={onChangeBirth}
+                        onFocus={onChangeBirth}
                         errors={errors.BirthDate}
                         Calendar={onClick}
                         BirthDate={true}
@@ -143,7 +171,8 @@ const PersonalDetails = () => {
                     {CalenderOpen && <div onClick={(e) => e.stopPropagation()} className='-top-32 z-20 absolute bg-white shadow-4xl p-3 rounded-xl w-80'>
                         <Calendar
                             value={new Date(now.getFullYear() - 18, now.getMonth(), now.getDate())}
-                            maxDate={new Date(now.getFullYear() - 18, now.getMonth(), now.getDate())} onChange={(e) => setCalendarValue(new Date(e).toLocaleDateString())} />
+                            maxDate={new Date(now.getFullYear() - 18, now.getMonth(), now.getDate())}
+                            onChange={(e) => setCalendarValue(new Date(e).toLocaleDateString())} />
                     </div>}
                 </form>
 
@@ -176,8 +205,9 @@ const PersonalDetails = () => {
                 </ConfigProvider>
                 <p className='mt-5 text-[#00000094] text-xs'>By joining, I confirm I have read the  <span className='ml-1 text-[#00754a] underline cursor-pointer'>Terms Of Use</span> and  <span className='ml-1 text-[#00754a] underline cursor-pointer'>Privacy Policy</span> . I agree with the Terms and Conditions.</p>
                 <div className='flex justify-center mt-14 mb-20'>
-                    {SubmitBtn ?
-                        <button className='bg-[#00754a] hover:bg-[#1e3932] px-6 py-3 rounded-3xl w-[330px] font-bold text-white text-xs'>Finish Sign Up</button> :
+                    {Object.values(SubmitBtn).every((item) => item) ?
+                        <Link to={'/welcome'}>
+                            <button onClick={() => setUser({ ...SubmitBtn, ...Data })} className='bg-[#00754a] hover:bg-[#1e3932] px-6 py-3 rounded-3xl w-[330px] font-bold text-white text-xs'>Finish Sign Up</button></Link> :
 
                         <button className='bg-[#000000a8] active:bg-[#1e3932] opacity-60 px-6 py-3 rounded-3xl w-[330px] text-[#c7c7c7] text-xs'>Finish Sign Up</button>}
                 </div>

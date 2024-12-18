@@ -21,6 +21,7 @@ const LoginInput = (
         errorPassword,
         BirthDate,
         Calendar,
+        onFocus,
         color,
         ParentClass
     }) => {
@@ -35,6 +36,7 @@ const LoginInput = (
                     name={name}
                     onBlur={onBlur}
                     onInput={onInput}
+                    onFocus={onFocus}
                     onClick={Calendar}
                     id={id}
                     onChange={onChange}

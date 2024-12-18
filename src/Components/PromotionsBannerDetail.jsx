@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
-import StarBoxContent from './StarBoxContent'
 import { ConfigProvider, Modal } from 'antd'
-import LoginModal from './LoginPage/LoginModal'
+const StarBoxContent = React.lazy(() => import('./StarBoxContent'));
+const LoginModal = React.lazy(() => import('./LoginPage/LoginModal'));
 
 const PromotionsBannerDetail = () => {
     const [Open, setOpen] = useState(false);
     return (
         <main>
-            <section className='m-auto max-w-[1240px]'>
+            <section className='lg:block hidden m-auto px-5 max-w-[720px] lg:max-w-[1240px]'>
                 <p className='py-4 font-thin text-slate-600 text-sm'>{'Home > Promotions'}</p>
             </section>
-            <section>
+            <section className='relative -top-28 lg:top-0 lg:static px-5'>
                 <img loading='lazy' src="https://preprodtsbstorage.blob.core.windows.net/cms/uploads/Banner_1_d3f7563c9c.png" alt="" />
                 <div className='m-auto py-5 max-w-[1240px]'>
                     <h1 className='mt-6 mb-12 font-[Rubik] font-medium text-[#213e36] text-2xl'>Starbucks Beverage Subscriptions</h1>
@@ -21,13 +21,13 @@ const PromotionsBannerDetail = () => {
                         <p className='text-[#00b050]'>Book your subscription Today!</p>
                     </div>
                     <div className='flex justify-center mt-10'>
-                        <button onClick={()=> setOpen(true)} className='bg-[#00754a] hover:bg-[#1e3932] px-28 py-2 rounded-3xl font-bold text-[12px] text-white'>Login To view offers</button>
+                        <button onClick={() => setOpen(true)} className='bg-[#00754a] hover:bg-[#1e3932] px-28 py-2 rounded-3xl font-bold text-[12px] text-white'>Login To view offers</button>
                     </div>
                 </div>
                 <div className="border-gray-300 border-b-2">
-                    <h1 className="m-auto mt-2 py-4 max-w-[1240px] font-[600] font-[sans-serif] text-2xl">Terms & Conditions</h1>
+                    <h1 className="m-auto mt-2 py-4 max-w-[720px] lg:max-w-[1240px] font-[600] font-[sans-serif] text-2xl">Terms & Conditions</h1>
                 </div>
-                <div className='m-auto py-5 max-w-[1240px]'>
+                <div className='m-auto py-5 max-w-[720px] lg:max-w-[1240px]'>
                     <div className='flex flex-col gap-8 my-4 mb-12'>
                         <StarBoxContent>Offer name – Offer for Beverage Subscription at Starbucks.</StarBoxContent>
 

@@ -23,8 +23,8 @@ const GiftCard = ({ image, title, description, data }) => {
     }
 
     return (
-        <div className='relative flex items-center bg-[#f9f9f9] shadow-5xl py-4 pr-0 pl-28 rounded-md w-[350px]'>
-            <div className='top-3 -left-10 absolute shadow-5xl rounded-md w-[160px] cursor-pointer overflow-hidden'>
+        <div className='relative flex items-center bg-[#f9f9f9] shadow-5xl py-4 pr-0 pl-20 lg:pl-28 rounded-md w-[300px] lg:w-[320px]'>
+            <div className='top-3 -left-14 lg:-left-6 absolute shadow-5xl rounded-md w-[130px] lg:w-[140px] cursor-pointer overflow-hidden'>
                 <img onClick={eventHandler} src={image} alt="" loading='lazy' />
             </div>
             <div className='px-5'>

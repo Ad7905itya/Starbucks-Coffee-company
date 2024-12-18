@@ -1,11 +1,11 @@
+import React, { useState } from "react"
 import { CustomizeSwiper } from "./Home"
 import { SwiperSlide } from "swiper/react"
-import Reward from "./Reward"
 import { RewardsData } from "../Data/RewardsData"
-import FaqData from "./FaqData"
-import StarBoxContent from "./StarBoxContent"
-import { useState } from "react"
 import { Helmet } from "react-helmet-async"
+const Reward = React.lazy(() => import('./Reward'));
+const FaqData = React.lazy(() => import('./FaqData'));
+const StarBoxContent = React.lazy(() => import('./StarBoxContent'));
 
 const StarbucksRewards = () => {
   const [Open, setOpen] = useState(false);
