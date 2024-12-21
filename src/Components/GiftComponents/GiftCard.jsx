@@ -8,6 +8,7 @@ const GiftCard = ({ image, title, description, data }) => {
     const eventHandler = () => {
         setOpen(true);
         setData(data);
+        
     }
 
     function detail() {
@@ -39,7 +40,7 @@ const GiftCard = ({ image, title, description, data }) => {
                     closeIcon={false}
                     footer={false}
                     onCancel={() => setOpen(false)}>
-                    <ModalSection detail={detail} Data={Data} />
+                    <ModalSection detail={detail} Data={Data} modalImg={Data.largeImage || Data.BannerImg} />
                 </Modal>
             </ConfigProvider>
         </div>

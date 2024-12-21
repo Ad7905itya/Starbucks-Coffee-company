@@ -4,7 +4,7 @@ import "./App.css";
 import Welcome from "./Components/Account/Welcome";
 const Navbar = React.lazy(() => import('./Components/Navbar/Navbar'));
 const Home = React.lazy(() => import('./Components/Home'));
-const Gift = React.lazy(() => import('./Components/Gift'));
+const Gift = React.lazy(() => import('./Components/GiftComponents/Gift'));
 const Order = React.lazy(() => import('./Components/Orders/Order'));
 const Store = React.lazy(() => import('./Components/Store'));
 const StarbucksRewards = React.lazy(() => import('./Components/StarbucksRewards'));
