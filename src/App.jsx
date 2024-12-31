@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import Welcome from "./Components/Account/Welcome";
-import Cart from "./Components/Cart/Cart";
+import Cart from "./Components/Cart/CartSection";
 const ItemsDetail = React.lazy(() => import('./Components/Orders/ItemsDetail'));
 const Navbar = React.lazy(() => import('./Components/Navbar/Navbar'));
 const Home = React.lazy(() => import('./Components/Home'));
@@ -15,7 +15,7 @@ const ProfileUser = React.lazy(() => import('./Components/Profile/ProfileUser'))
 const CreateAccount = React.lazy(() => import('./Components/Account/CreateAccount'));
 const Verification = React.lazy(() => import('./Components/Account/Verification'));
 const PersonalDetails = React.lazy(() => import('./Components/Account/PersonalDetails'));
-const PaySection = React.lazy(() => import('./Components/paySection/PaySection'));
+const PaySection = React.lazy(() => import('./Components/paySections/PaySection'));
 
 function App() {
   return (

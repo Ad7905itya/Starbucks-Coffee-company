@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import PayCards from './payCards';
+import PayCards from './PayCards'
 
 const PaySection = () => {
     const [Active, setActive] = useState({ firstSec: false, secondSec: true });
