@@ -1,17 +1,22 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { GiftCardData } from '../../Data/GiftCardData'
+import NavbarSection from './NavbarSection';
+import GiftCards from './GiftCards';
 const Footer = React.lazy(() => import('../footer/Footer'));
-const NavBarGift = React.lazy(() => import('./NavBarGift'));
-const GiftCard = React.lazy(() => import('./GiftCard'));
 
 const Gift = () => {
-    const [Active, setActive] = useState('1');
-    const [CategorySelection, setCategorySelection] = useState('Featured');
+    const GiftCardData = ['Featured', 'Anytime', 'Congratulations', 'Thank You'];
+    const [Active, setActive] = useState('Featured');
+    const [GiftCard, setGiftCard] = useState([])
+
+    useEffect(() => {
+        import('../../Data/GiftCardData').then((data) => {
+            setGiftCard(data.GiftCardData);
+        })
+    }, [])
 
     const handleClick = (e) => {
-        setActive(e.target.id);
-        setCategorySelection(e.target.value);
+        setActive(e.target.value);
     }
 
     return (
@@ -24,14 +29,14 @@ const Gift = () => {
             </section>
             <section className='relative -top-6 lg:top-0 bg-[#edebe9]'>
                 <div className='flex justify-between items-center m-auto max-w-[800px] lg:max-w-[1260px] h-14'>
-                    <div className='flex items-center h-full'>
+                    <div className='flex items-center h-full uppercase'>
                         <img className='w-16 h-16' src="https://www.starbucks.in/assets/icon/left-icon.svg" alt="left" loading='lazy' />
-                        <div className='flex items-center h-full uppercase'>
-                            <NavBarGift onHandler={handleClick} id={'1'} active={Active === "1" ? "active-2" : ""}>Featured</NavBarGift>
-                            <NavBarGift onHandler={handleClick} id={'2'} active={Active === "2" ? "active-2" : ""}>AnyTime</NavBarGift>
-                            <NavBarGift onHandler={handleClick} id={'3'} active={Active === "3" ? "active-2" : ""}>Congratulations</NavBarGift>
-                            <NavBarGift onHandler={handleClick} id={'4'} active={Active === "4" ? "active-2" : ""}>Thank You</NavBarGift>
-                        </div>
+                        <NavbarSection
+                            style={{ backgroundImage: 'url(https://www.starbucks.in/media/lineSeparator1-NQWR4CXV.png)' }}
+                            Active={Active}
+                            handleClick={handleClick}
+                            item={GiftCardData} />
+
                     </div>
                     <img className='w-16 h-16' src="https://www.starbucks.in/assets/icon/right-icon.svg" alt="right" loading='lazy' />
                 </div>
@@ -39,25 +44,22 @@ const Gift = () => {
             <section className='min-h-52 overflow-hidden'>
                 <div className='border-gray-400 px-8 border-b-[1px]'>
                     <div className='m-auto max-w-[800px] lg:max-w-[1240px]'>
-                        <h1 className='py-2 font-bold text-2xl'>{CategorySelection === "Featured" ? "AnyTime" : CategorySelection}</h1>
+                        <h1 className='py-2 font-bold text-2xl'>{Active === "Featured" ? "Anytime" : Active}</h1>
                     </div>
                 </div>
                 <div className='flex justify-center'>
                     <div className='gap-16 lg:gap-12 grid grid-cols-2 lg:grid-cols-3 m-auto mt-8 mb-20 px-6 lg:px-8 max-w-[800px] lg:max-w-[1240px]'>
-                        {
-                            CategorySelection === "Featured" ?
-                                GiftCardData.filter((Item) => Item.Feature && Item.category === "Anytime").map((Item, i) =>
-                                    <GiftCard data={Item} image={Item.BannerImg} title={Item.title} description={Item.description} key={i} />
-
-
-                                )
-                                : GiftCardData.filter((Item) => Item.category.toLowerCase() === CategorySelection.toLowerCase()).map((Item, i) =>
-                                    <GiftCard data={Item} image={Item.BannerImg} title={Item.title} description={Item.description} key={i} />
-                                )
-                        }
+                        {(Active === "Featured" ?
+                            (GiftCard.length ? GiftCard.filter((Item) => Item.Feature && Item.category === 'Anytime').map((Item, i) =>
+                                <GiftCards key={i} {...Item} />
+                            ) : <div>Loading...</div>)
+                            : GiftCard.length ? GiftCard.filter((Item) => Item.category === Active).map((Item, i) =>
+                                <GiftCards key={i} {...Item} />
+                            ) : <div>Loading...</div>
+                        )}
                     </div>
                 </div>
-                {CategorySelection === "Featured" ?
+                {Active === "Featured" ?
                     <>
                         <div className='border-gray-400 px-8 border-b-[1px]'>
                             <div className='m-auto max-w-[800px] lg:max-w-[1240px]'>
@@ -65,8 +67,8 @@ const Gift = () => {
                             </div>
                         </div>
                         <div className='gap-16 lg:gap-12 grid grid-cols-2 lg:grid-cols-3 m-auto mt-8 mb-20 px-6 lg:px-8 max-w-[750px] lg:max-w-[1240px]'>
-                            {GiftCardData.filter((Item) => Item.Feature && Item.category === "Congratulations").map((Item, i) =>
-                                <GiftCard data={Item} image={Item.BannerImg} title={Item.title} description={Item.description} key={i} />)}
+                            {GiftCard.length ? GiftCard.filter((Item) => Item.Feature && Item.category === "Congratulations").map((Item, i) =>
+                                <GiftCards key={i} {...Item} />) : <div>Loading...</div>}
                         </div>
                     </> : ""}
             </section>

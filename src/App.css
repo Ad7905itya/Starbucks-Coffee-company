@@ -17,6 +17,11 @@
     border: none;
 }
 
+.active-3{
+    background-color: #d4e9e2;
+    color: #000;
+}
+
 .gift::after{
     content: '';
     position: absolute;

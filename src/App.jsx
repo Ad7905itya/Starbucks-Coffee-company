@@ -2,6 +2,8 @@ import React from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import Welcome from "./Components/Account/Welcome";
+import Cart from "./Components/Cart/Cart";
+const ItemsDetail = React.lazy(() => import('./Components/Orders/ItemsDetail'));
 const Navbar = React.lazy(() => import('./Components/Navbar/Navbar'));
 const Home = React.lazy(() => import('./Components/Home'));
 const Gift = React.lazy(() => import('./Components/GiftComponents/Gift'));
@@ -36,7 +38,11 @@ function Layout() {
         <Route path="/giftCards" element={<Gift />} />
         <Route path="/ordering" element={<Order />} />
         <Route path="/store-locator" element={<Store />} />
-        <Route path="/ordering" element={<Order />} />
+        <Route path="/ordering/:ItemDetail">
+          <Route index element={<Order />} />
+          <Route path=":ItemDetail" element={<ItemsDetail />} />
+        </Route>
+        <Route path="ordering/cart" element={<Cart />} />
         <Route path="/pay" element={<PaySection />} />
         <Route path="/registration">
           <Route element={<CreateAccount />} index />

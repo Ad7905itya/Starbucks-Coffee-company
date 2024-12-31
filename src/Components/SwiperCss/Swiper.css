@@ -26,6 +26,10 @@
     font-size: 28px;
 }
 
+.css-var-r7{
+    --ant-color-bg-mask: rgba(0,0,0,0);
+}
+
 
 @media (min-width: 1024px) {
     .swiper-button-prev, .swiper-button-next {

@@ -30,31 +30,20 @@ const OrderNavbar = ({ IsActive, onClick1, onClick2, Dine }) => {
                 <div className='flex justify-center md:justify-end rounded-xl w-full'>
                     <button onClick={onClick1}>
                         <DineInBtn
-                            className={`flex items-center gap-2 border-[1px] border-[rgba(255,255,255,0.5)] py-3 pl-8 rounded-l-lg w-52 md:w-40 lg:w-52 font-[Rubik] ${!IsActive.firstBtn ? 'text-white' : 'text-black bg-white'}`}
+                            className={`flex items-center gap-2 border-[1px] border-[rgba(255,255,255,0.5)] py-3 pl-8 rounded-l-lg w-44 md:w-32 lg:w-44 font-[Rubik] ${!IsActive.firstBtn ? 'text-white' : 'text-black bg-white'}`}
                             image={!IsActive.firstBtn ? Dine[0].image1 : Dine[0].image2}
                             title={Dine[0].text}
                         />
                     </button>
                     <button onClick={onClick2}>
                         <DineInBtn
-                            className={`flex items-center gap-2 border-[1px] border-[rgba(255,255,255,0.5)] py-3 pl-8 rounded-r-lg w-52 md:w-40 lg:w-52 font-[Rubik] ${!IsActive.SecondBtn ? 'text-white' : 'text-black bg-white'}`}
+                            className={`flex items-center gap-2 border-[1px] border-[rgba(255,255,255,0.5)] py-3 pl-8 rounded-r-lg w-44 md:w-32 lg:w-44 font-[Rubik] ${!IsActive.SecondBtn ? 'text-white' : 'text-black bg-white'}`}
                             image={!IsActive.SecondBtn ? Dine[1].image1 : Dine[1].image2}
                             title={Dine[1].text}
                         />
                     </button>
                 </div>
             </div>
-
-            {Open && <div className='flex justify-between items-start m-auto mt-8 px-8 py-2 max-w-[400px] md:max-w-[800px] lg:max-w-[1280px]'>
-                <ErrorPopup
-                    parentClass='flex items-start justify-between gap-3 bg-[#efd4dc] py-2 px-4 rounded-lg lg:w-[420px] md:w-[240px] w-full'
-                    fontSize={11}
-                    mt={-10}
-                    onClick={onClick}
-                    header="No store found!"
-                    para="Please enter a different location to find the nearest Starbucks."
-                />
-            </div>}
         </section>
     )
 }

@@ -3,14 +3,14 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { HelmetProvider } from 'react-helmet-async'
-import LocalStorageFormData from './contexts/LocalStorageFormData.jsx'
+import CartItemsContext from './contexts/CartItemsContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <HelmetProvider>
-      <LocalStorageFormData>
+      <CartItemsContext>
         <App />
-      </LocalStorageFormData>
+      </CartItemsContext>
     </HelmetProvider>
   </StrictMode>,
 )

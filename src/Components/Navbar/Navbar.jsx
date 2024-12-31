@@ -11,7 +11,7 @@ const Navbar = () => {
   const [SearchValue, setSearchValue] = useState('');
   const [isLoginUser] = useLocalStorage('User', {});
   return (
-    <header className="top-0 z-10 sticky bg-white pb-2 border-b-2">
+    <header className="top-0 z-40 sticky bg-white pb-2 border-b-2">
       <nav className="flex lg:flex-row flex-col justify-between items-center gap-5 m-auto px-10 py-2 pt-0 lg:pt-5 w-full max-w-[800px] lg:max-w-[1300px]">
         <div className="flex lg:flex-row flex-col items-center gap-8 lg:gap-14">
           <img className="w-10" loading="lazy" src="https://www.starbucks.in/assets/icon/logo.png" alt="logo" />
