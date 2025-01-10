@@ -1,14 +1,17 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import CartTable from './CartTable'
 import { ContextCartLists } from '../../contexts/CartItemsContext'
 import SlideBar from '../Orders/SlideBar'
 import { Link } from 'react-router-dom'
 import { useLocalStorage } from '../../Hooks/useLocalStorage'
+import { ConfigProvider, Modal } from 'antd'
+import OrderConfirmed from './OrderConfirmed'
 
 
 const Cart = () => {
-    const { ProductCart, Total, subTotalValue } = useContext(ContextCartLists);
+    const [Open, setOpen] = useState(false);
+    const { ProductCart, setProductCart, Total, subTotalValue } = useContext(ContextCartLists);
     const [cartDetail, setCartDetail] = useLocalStorage('cartDetail', {});
 
     useEffect(() => {
@@ -28,7 +31,7 @@ const Cart = () => {
 
             <section className='m-auto mt-8 px-8 pt-6 w-full max-w-[800px] lg:max-w-[1240px]'>
                 <div className='flex flex-col gap-5'>
-                    {ProductCart.map((item, i) => <CartTable key={i} state={item} />)}
+                    {ProductCart.map((item, i) => <CartTable open={Open} key={i} state={item} />)}
                 </div>
             </section>
 
@@ -84,8 +87,21 @@ const Cart = () => {
                         <SlideBar
                             BtnName='Place Order'
                             cart={cartDetail}
-                            pages={'ordering'}
+                            onClick={() => setOpen(true)}
                         />
+                        <ConfigProvider theme={{ cssVar: true }}>
+                            <Modal
+                                open={Open}
+                                closeIcon={false}
+                                width={700}
+                                footer={false} onCancel={() => setOpen(false)}>
+                                <OrderConfirmed
+                                    Total={Total}
+                                    Open={Open}
+                                    ProductCart={ProductCart}
+                                    setProductCart={setProductCart} />
+                            </Modal>
+                        </ConfigProvider>
                     </section>
 
                 </> :

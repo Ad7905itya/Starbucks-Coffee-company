@@ -3,6 +3,7 @@ import ModalData from "./Orders/ModalData"
 const ModalSection = ({
     Data,
     detail,
+    isHome,
     name,
     images,
     veg,
@@ -19,7 +20,7 @@ const ModalSection = ({
             <div className="relative px-6 pt-12 pb-8 h-full">
                 {!Data?.isGiftCard && veg ? <img src={'https://www.starbucks.in/assets/icon/veg.svg'} loading='lazy' alt="" /> : <img src={'https://www.starbucks.in/assets/icon/nonveg.svg'}
                     loading='lazy' alt="" />}
-                {detail ? detail() : (
+                {isHome ? detail() : (
                     <div>
                         <img src="https://www.starbucks.in/assets/icon/greyleafright.svg" loading="lazy" className="top-0 right-0 absolute w-16" alt="" />
                         <img src="https://www.starbucks.in/assets/icon/greyleafright.svg" loading="lazy" className="top-0 right-0 absolute w-12 lg:w-16" alt="" />

@@ -15,11 +15,15 @@ const ProfileUser = () => {
     const [isUserLogin, setIsUserLogin] = useLocalStorage('User', {});
     const [Previous, setPrevious] = useLocalStorage('PrevUser', {});
     const [Data, setData] = useSessionStorage('CreateSubmitData', {});
+    const [ProductCart, setProductCart] = useLocalStorage('CartItems', []);
+    const [cartDetail, setCartDetail] = useLocalStorage('cartDetail', {});
     const onClick = () => {
         setPrevious(isUserLogin);
+        setCartDetail({});
+        setProductCart([]);
         setData({})
-        setIsUserLogin({})
-        location.assign('/');
+        setIsUserLogin({});
+        location.assign('/')
     }
 
     return (

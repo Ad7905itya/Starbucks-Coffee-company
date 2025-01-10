@@ -40,7 +40,7 @@ const GiftCards = ({ title, BannerImg, description }) => {
                     closeIcon={false}
                     footer={false}
                     onCancel={() => setOpen(false)}>
-                    <ModalSection detail={detail} Data={{ ...Data, isGiftCard: true }} images={Data.largeImage || Data.BannerImg} />
+                    <ModalSection detail={detail} isHome={true} Data={{ ...Data, isGiftCard: true }} images={Data.largeImage || Data.BannerImg} />
                 </Modal>
             </ConfigProvider>
         </div>

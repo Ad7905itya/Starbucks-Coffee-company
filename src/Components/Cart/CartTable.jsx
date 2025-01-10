@@ -3,7 +3,7 @@ import { BiMinus, BiPlus } from 'react-icons/bi'
 import { ContextCartLists } from '../../contexts/CartItemsContext';
 import { ConfigProvider, Modal } from 'antd';
 
-const CartTable = ({ state }) => {
+const CartTable = ({ state, open }) => {
     const { CartQuantityDecrement, CartQuantityIncrement, Open, setOpen, DeleteItems } = useContext(ContextCartLists);
 
     return (
@@ -20,11 +20,11 @@ const CartTable = ({ state }) => {
             </aside>
             <aside>
                 <div className='flex gap-20'>
-                    <div className='flex items-center gap-2 border-[rgba(0,0,0,0.12)] border-2 px-[10px] py-[2px] rounded-md select-none'>
+                    {!open && <div className='flex items-center gap-2 border-[rgba(0,0,0,0.12)] border-2 px-[10px] py-[2px] rounded-md select-none'>
                         <BiMinus onClick={() => CartQuantityDecrement(state.ProductName)} size={18} color='#20754a' className='hover:bg-[#f9f6f6] cursor-pointer' />
                         <span>{state.quantity}</span>
                         <BiPlus onClick={() => CartQuantityIncrement(state.ProductName)} size={18} color='#20754a' className='hover:bg-[#f9f6f6] cursor-pointer' />
-                    </div>
+                    </div>}
                     <h1 className='font-bold'>₹ {(state.quantity * state.price)?.toFixed(2)}</h1>
                 </div>
             </aside>

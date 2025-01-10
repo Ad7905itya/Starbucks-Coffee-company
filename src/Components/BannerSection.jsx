@@ -13,7 +13,9 @@ const BannerSection = ({ Banner }) => {
                 </div>
                 <div className={`absolute right-5 bottom-2 flex items-end  w-44 h-full`}>
                     {Banner.btnText !== "Know More" ?
-                        <button className='bg-white mb-4 ml-5 lg:ml-0 px-8 lg:px-14 py-2 lg:py-4 rounded-3xl font-sans font-semibold text-[10px] lg:text-xs'>{Banner.btnText}</button> : <Link to={'/banner-detail'}>
+                        <Link to={'/ordering'} state={{title: 'Drinks'}}>
+                            <button className='bg-white mb-4 ml-5 lg:ml-0 px-8 lg:px-14 py-2 lg:py-4 rounded-3xl font-sans font-semibold text-[10px] lg:text-xs'>{Banner.btnText}</button>
+                        </Link> : <Link to={'/banner-detail'}>
                             <p className='bg-white mb-4 ml-5 lg:ml-0 px-8 lg:px-14 py-2 lg:py-4 rounded-3xl font-sans font-semibold text-[10px] lg:text-xs'>{Banner.btnText}</p>
                         </Link>}
                 </div>

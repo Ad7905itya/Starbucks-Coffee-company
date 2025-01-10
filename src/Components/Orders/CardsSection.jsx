@@ -64,7 +64,7 @@ const CardsSection = ({ CategoryData }) => {
             </section>
 
             {/* Card components */}
-            <section className='flex px-8 py-10'>
+            <section className='flex mb-20 px-8 py-14'>
                 <div className='gap-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 m-auto px-5 w-full max-w-[1300px]'>
                     {ActiveTag.length ? FilterItems.items.filter((tag) => ActiveTag.includes(tag.filtersData?.toLowerCase())).map((item) => <Cards key={item.id} cardData={item} {...item} />) :
                         FilterItems?.items.filter((item) => item.parameters[0].value !== FilterItems.name).map((item, i) => <Cards key={i} cardData={item} {...item} />)}

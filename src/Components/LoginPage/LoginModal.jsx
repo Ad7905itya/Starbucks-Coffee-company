@@ -1,12 +1,15 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import LoginInput from './LoginInput'
 import "./Login.css"
 import { Link, useLocation } from 'react-router-dom'
 import { useLocalStorage } from '../../Hooks/useLocalStorage'
 import { createPortal } from 'react-dom'
+import { ContextCartLists } from '../../contexts/CartItemsContext'
 
 const LoginModal = ({ setOpen }) => {
     const [PrevUser] = useLocalStorage('PrevUser', {});
+    const [BtnEffect, setBtnEffect] = useState(false);
+    const { loginAsGuest } = useContext(ContextCartLists);
     const path = useLocation();
     const [isUser, setIsUser] = useLocalStorage('User', {});
     const [Data, setData] = useState({
@@ -94,6 +97,20 @@ const LoginModal = ({ setOpen }) => {
         }
     }
 
+    function onGuestLogin() {
+        setBtnEffect(true);
+        setTimeout(() => {
+            setOpen(false);
+            setBtnEffect(false);
+            if (path.pathname === '/') {
+                location.assign('/pay');
+            } else {
+                location.assign('/');
+            };
+        }, 2000);
+        loginAsGuest();
+    }
+
     return (
         <div className='p-6'>
             <div className='text-end'>
@@ -125,6 +142,11 @@ const LoginModal = ({ setOpen }) => {
                     {SubmitData ? <button className='bg-[#00754a] hover:bg-[#1e3932] px-6 py-3 rounded-3xl w-[330px] font-bold text-white text-xs'>login</button> :
                         <button className='bg-[#000000a8] active:bg-[#1e3932] opacity-60 px-6 py-3 rounded-3xl w-[330px] text-[#c7c7c7] text-xs'>Login</button>}
                 </div>
+
+                <div className='flex flex-col justify-center items-center mt-4'>
+                    {BtnEffect ? <button className='bg-[#00754a] hover:bg-[#1e3932] px-6 py-3 rounded-3xl w-[230px] h-10 font-bold text-white text-xs animate-pulse'></button> : <button onClick={onGuestLogin} className='bg-[#00754a] hover:bg-[#1e3932] px-6 py-3 rounded-3xl w-[230px] font-bold text-white text-xs'>Login as Guest</button>}
+                </div>
+
             </form>
             <div className='flex flex-col justify-center items-center'>
                 <p className='mt-8 text-[11px]'>Facing trouble logging in?

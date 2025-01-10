@@ -16,7 +16,6 @@ const Barista = ({ item }) => {
       <>
         <img src="https://www.starbucks.in/assets/icon/greyleafright.svg" loading="lazy" className="top-0 right-0 absolute w-12 lg:w-16" alt="" />
         <div className="flex flex-col items-start gap-1">
-          <img src={Data.IconImage} loading="lazy" />
           <h1 className="font-bold text-lg">{Data.title}</h1>
           <p className="text-slate-400 text-xs">{Data.subTitle}</p>
         </div>
@@ -54,7 +53,12 @@ const Barista = ({ item }) => {
             closeIcon={false}
             footer={false}
             onCancel={() => setOpen(false)}>
-            <ModalSection detail={detail} Data={Data} />
+            <ModalSection
+              detail={detail}
+              Data={Data}
+              isHome={true}
+              veg={true}
+              images={Data.images} />
           </Modal>
         </ConfigProvider>
       </div>

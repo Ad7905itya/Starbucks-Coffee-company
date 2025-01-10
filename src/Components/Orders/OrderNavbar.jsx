@@ -5,6 +5,7 @@ import LoginInput from '../LoginPage/LoginInput'
 
 const OrderNavbar = ({ IsActive, onClick1, onClick2, Dine }) => {
     const [Open, setOpen] = useState(true);
+    const [StoreSearch, setStoreSearch] = useState('');
 
     const onClick = () => {
         setOpen(false);
@@ -16,10 +17,12 @@ const OrderNavbar = ({ IsActive, onClick1, onClick2, Dine }) => {
                     <img className='w-5' src="https://www.starbucks.in/assets/icon/Location%20icon%203.svg" loading='lazy' alt="" />
                     <div className='w-full'>
                         <LoginInput
-                            myValue=""
-                            Header=""
-                            onChange={(e) => e.target.value}
-                            id="search"
+                            myValue={StoreSearch}
+                            Header='&nbsp;'
+                            type='text'
+                            name='&nbsp;'
+                            onChange={(e) => setStoreSearch(e.target.value)}
+                            id='&nbsp;'
                             ParentClass="m-0"
                             color="#1e3932"
                             placeholder="No Store Selected" />

@@ -4,7 +4,9 @@ import { useLocalStorage } from '../Hooks/useLocalStorage'
 export const ContextCartLists = createContext();
 
 const CartItemsContext = ({ children }) => {
+    const [isUserLogin, setIsUserLogin] = useLocalStorage('User', {});
     const [ProductCart, setProductCart] = useLocalStorage('CartItems', []);
+    const [cartDetail, setCartDetail] = useLocalStorage('cartDetail', {});
     const [Open, setOpen] = useState(false);
 
     const CartQuantityDecrement = (Product) => {
@@ -39,6 +41,15 @@ const CartItemsContext = ({ children }) => {
         return ProductCart.reduce((acc, item) => acc + (item.quantity * item.price), 0);
     }
 
+    const loginAsGuest = () => {
+        const guestUser = {
+            FirstName: "guest_" + new Date().getTime(),
+            name: "Guest User",
+            isGuest: true,
+        };
+        setIsUserLogin(guestUser);
+    }
+
 
 
     const CartQuantityIncrement = (Product) => {
@@ -63,7 +74,8 @@ const CartItemsContext = ({ children }) => {
             setOpen,
             DeleteItems,
             Total,
-            subTotalValue
+            subTotalValue,
+            loginAsGuest
         }}>
             {children}
         </ContextCartLists.Provider>

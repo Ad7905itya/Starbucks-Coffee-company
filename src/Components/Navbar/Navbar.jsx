@@ -1,15 +1,18 @@
 import { ConfigProvider, Modal } from "antd";
 import React, { useState } from "react";
 import { PiUserCircle } from "react-icons/pi";
-import { Link, NavLink } from "react-router-dom";
-import SearchInput from './SearchInput'
+import { Link, NavLink } from "react-router-dom"
 import LoginModal from "../LoginPage/LoginModal";
 import { useLocalStorage } from "../../Hooks/useLocalStorage";
+import SearchInput from './SearchInput'
+import { options } from '../../Data/SearchOptions'
 
 const Navbar = () => {
+  const [Value, setValue] = useState('');
   const [Open, setOpen] = useState(false);
-  const [SearchValue, setSearchValue] = useState('');
   const [isLoginUser] = useLocalStorage('User', {});
+
+  console.log(Value);
   return (
     <header className="top-0 z-40 sticky bg-white pb-2 border-b-2">
       <nav className="flex lg:flex-row flex-col justify-between items-center gap-5 m-auto px-10 py-2 pt-0 lg:pt-5 w-full max-w-[800px] lg:max-w-[1300px]">
@@ -27,12 +30,11 @@ const Navbar = () => {
           </div>
         </div>
         <div className="flex lg:flex-row flex-col items-center gap-5 lg:gap-20 w-full lg:w-auto">
-          <SearchInput
-            value={SearchValue}
-            name="searchbar"
-            id="searchbar"
-            onChange={(e) => setSearchValue(e.target.value)}
-            placeholder="Looking for something specific?" />
+          <Link to={'/ordering'} state={{searchValue: Value}}>
+            <SearchInput
+              options={options}
+              setValue={setValue} />
+          </Link>
           <div>
             <Link to={'/profile'}><PiUserCircle size={34} color="grey" fontWeight={200} /></Link>
           </div>

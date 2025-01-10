@@ -23,11 +23,13 @@ const SlideBar = ({ state, cart, BtnName, onClick, pages }) => {
             </div>}
 
             <div className='bg-[#006241] py-4 w-full'>
-                <Link to={`/${pages}`}>
+                {pages ? <Link to={`/${pages}`}>
                     <div className='flex justify-end m-auto px-4 w-full max-w-[800px] lg:max-w-[1260px] h-full'>
                         <button onClick={onClick} className='bg-white px-5 py-2 rounded-3xl w-full max-w-[180px] font-bold text-[#000000c9] text-sm'>{BtnName}</button>
                     </div>
-                </Link>
+                </Link> : <div className='flex justify-end m-auto px-4 w-full max-w-[800px] lg:max-w-[1260px] h-full'>
+                    <button onClick={onClick} className='bg-white px-5 py-2 rounded-3xl w-full max-w-[180px] font-bold text-[#000000c9] text-sm'>{BtnName}</button>
+                </div>}
             </div>
         </section>
     )

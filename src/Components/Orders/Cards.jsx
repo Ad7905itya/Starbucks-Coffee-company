@@ -47,7 +47,7 @@ const Cards = ({
                     footer={false}
                     width={600}
                     onCancel={() => setOpen(false)}>
-                    <ModalSection {...cardData} />
+                    <ModalSection {...cardData} isHome={false} />
                 </Modal>
             </ConfigProvider>
         </div>

@@ -8,6 +8,11 @@
     font-weight: 600;
 }
 
+.ant-select-selector{
+    --ant-line-width: 0;
+    --ant-control-outline-width: 0;
+}
+
 .gift{
     position: relative;
     border: none;
