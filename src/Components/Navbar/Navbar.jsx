@@ -9,10 +9,16 @@ import { options } from '../../Data/SearchOptions'
 
 const Navbar = () => {
   const [Value, setValue] = useState('');
+  const [GetValue, setGetValue] = useState('');
   const [Open, setOpen] = useState(false);
   const [isLoginUser] = useLocalStorage('User', {});
 
-  console.log(Value);
+  const onKeyUp = (e) => {
+    if (e.key === 'Enter') {
+      setGetValue(Value);
+      setValue('');
+    }
+  }
   return (
     <header className="top-0 z-40 sticky bg-white pb-2 border-b-2">
       <nav className="flex lg:flex-row flex-col justify-between items-center gap-5 m-auto px-10 py-2 pt-0 lg:pt-5 w-full max-w-[800px] lg:max-w-[1300px]">
@@ -30,11 +36,10 @@ const Navbar = () => {
           </div>
         </div>
         <div className="flex lg:flex-row flex-col items-center gap-5 lg:gap-20 w-full lg:w-auto">
-          <Link to={'/ordering'} state={{searchValue: Value}}>
-            <SearchInput
-              options={options}
-              setValue={setValue} />
-          </Link>
+          <SearchInput
+            onKeyUp={onKeyUp}
+            options={options}
+            setValue={setValue} />
           <div>
             <Link to={'/profile'}><PiUserCircle size={34} color="grey" fontWeight={200} /></Link>
           </div>
