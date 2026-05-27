@@ -1,0 +1,100 @@
+.active{
+    color: #279b5b;
+    font-weight: 600;
+    border-bottom: 2px solid #279b5b;
+}
+.active-2{
+    color: #279b5b;
+    font-weight: 600;
+}
+
+.ant-select-selector{
+    --ant-line-width: 0;
+    --ant-control-outline-width: 0;
+}
+
+.gift{
+    position: relative;
+    border: none;
+}
+
+.gift:hover{
+    border: none;
+}
+
+.active-3{
+    background-color: #d4e9e2;
+    color: #000;
+}
+
+.gift::after{
+    content: '';
+    position: absolute;
+    width: 0px;
+    height: 2px;
+    left: 50%;
+    bottom:0;
+    background-color: #279b5b;
+    transition: all ease-in-out .2s;
+}
+.active-2::after{
+    width: 100%;
+    left: 0;
+}
+
+.gift:hover::after{
+    width: 100%;
+    left: 0;
+}
+
+.swiper {
+    width: 100%;
+    height: 100%;
+}
+
+
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.swiper-slide img {
+    display: block;
+    object-fit: cover;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    border: 2px solid #f1f1f1;
+    background: #198754;
+}
+
+.ant-modal-content{
+    --ant-modal-content-padding: 0;
+    overflow: hidden;
+    --ant-border-radius-lg: 12px;
+}
+
+.shadow-inner {
+    --tw-shadow: inset 0 -150px 20px 0 rgb(0,0,0,0.6);
+}
+
+.shadow-inner:hover{
+    --tw-shadow: inset 0 -150px 20px 0 rgb(0,0,0,0.6),inset 0 -350px 20px 0 rgb(0,0,0,0.4);
+}
+
+.transition-all{
+    transition-duration: 0.5s;
+}

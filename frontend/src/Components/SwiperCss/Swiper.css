@@ -1,0 +1,39 @@
+.swiper-button-prev,.swiper-button-next{
+    background-color: #fff;
+    color: #00754a;
+    padding: 10px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    top: 125px;
+}
+
+.swiper-button-prev::after,.swiper-button-next::after{
+    font-size: 20px;
+}
+
+.swiper-button-prev{
+    left: 0;
+    box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.1);
+}
+
+.swiper-button-next{
+    right: 0;
+    box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.1);
+}
+
+.swiper-button-next::after{
+    font-size: 28px;
+}
+
+.css-var-r7{
+    --ant-color-bg-mask: rgba(0,0,0,0);
+}
+
+
+@media (min-width: 1024px) {
+    .swiper-button-prev, .swiper-button-next {
+    width: 45px;
+    height: 45px;
+    }
+}

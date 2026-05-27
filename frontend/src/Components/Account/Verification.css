@@ -1,0 +1,17 @@
+.css-var-r3.ant-input-css-var{
+    --ant-input-padding-block: 22px;
+    --ant-input-active-border-color: rgb(0, 117, 74);
+    --ant-input-hover-border-color: rgb(0,117,74);
+    border: solid 1px rgb(0, 117, 74);
+}
+
+.css-var-r3{
+    --ant-color-primary: #00754a;
+    --ant-color-primary-hover: #00754a;
+    --ant-control-interactive-size: 20px;
+}
+
+.ant-checkbox-input,.ant-checkbox-inner{
+    width: 20px;
+    height: 20px;
+}
