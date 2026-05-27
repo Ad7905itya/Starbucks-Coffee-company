@@ -5,10 +5,10 @@
   "license": "ISC",
   "author": "aditya",
   "type": "module",
-  "main": "Server.js",
+  "main": "server.js",
   "scripts": {
-    "serve": "node Server.js",
-    "dev": "node --watch Server.js",
+    "serve": "node server.js",
+    "dev": "node --watch server.js",
     "seed": "node seed.js"
   },
   "dependencies": {
