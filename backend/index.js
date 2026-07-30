@@ -26,8 +26,7 @@ const allowedOrigins = [
     process.env.CLIENT_ORIGIN, 
     "http://localhost:3000", 
     "http://localhost:5173", 
-    "http://192.168.29.52:3000", 
-    "http://192.168.29.52:5173"  
+    "https://starbuckclone1.netlify.app/"
 ].filter(Boolean);
 
 app.use(cors({
@@ -83,7 +82,7 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`✓ Server started on http://localhost:${PORT}`);
+    console.log(`✓ Server started on https://starbucks-coffee-company-git-main-storage2.vercel.app`);
 });
 
 
