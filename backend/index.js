@@ -76,6 +76,8 @@ app.use((error, req, res, next) => {
     }
 })
 
+
+
 app.use((req, res) => {
     res.status(404).json({ message: "Route not found" });
 });
@@ -83,3 +85,6 @@ app.use((req, res) => {
 app.listen(PORT, () => {
     console.log(`✓ Server started on http://localhost:${PORT}`);
 });
+
+
+export default app;
