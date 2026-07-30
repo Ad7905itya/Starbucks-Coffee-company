@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
-import { OTP } from "../schema/otpSchema.js";
+import { OTP } from "../models/OtpModel.js";
+
 
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -11,7 +12,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// POST /api/otp/send
 export const sendOTP = async (req, res) => {
   try {
     const { email, phone } = req.body;
@@ -22,8 +22,11 @@ export const sendOTP = async (req, res) => {
 
     const otp = generateOTP();
 
-    await OTP.deleteMany({ email });
-    await OTP.create({ email, phone, otp });
+    await OTP.findOneAndUpdate(
+      { $or: [{ email }, { phone }] }, 
+      { email, phone, otp, createdAt: new Date() },
+      { upsert: true, new: true }
+    );
 
     await transporter.sendMail({
       from: `"Tata Starbucks" <${process.env.EMAIL_USER}>`,
@@ -47,7 +50,7 @@ export const sendOTP = async (req, res) => {
   }
 };
 
-// POST /api/otp/verify
+
 export const verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
@@ -56,19 +59,30 @@ export const verifyOTP = async (req, res) => {
       return res.status(400).json({ success: false, message: "Email aur OTP required" });
     }
 
-    const record = await OTP.findOne({ email });
+    // Email ko trim/lowercase karke dhundho (case-sensitivity se bachne ke liye)
+    const cleanEmail = email.trim().toLowerCase();
+    const record = await OTP.findOne({ email: cleanEmail });
 
     if (!record) {
       return res.status(400).json({ success: false, message: "OTP expired or not found" });
     }
 
-    if (record.otp !== otp) {
+    // 1. Explicit Expiry Check (5 minutes = 300,000 ms)
+    const otpAge = Date.now() - new Date(record.createdAt).getTime();
+    if (otpAge > 5 * 60 * 1000) {
+      await OTP.deleteOne({ _id: record._id }); // Expired OTP clean up
+      return res.status(400).json({ success: false, message: "OTP expired" });
+    }
+
+    // 2. Safe String Comparison
+    if (String(record.otp).trim() !== String(otp).trim()) {
       return res.status(400).json({ success: false, message: "Invalid OTP" });
     }
 
+    // Success: Delete OTP after verification
     await OTP.deleteOne({ _id: record._id });
 
-    return res.status(200).json({ success: true, message: "OTP verified" });
+    return res.status(200).json({ success: true, message: "OTP verified successfully" });
 
   } catch (error) {
     console.error("verifyOTP error:", error.message);

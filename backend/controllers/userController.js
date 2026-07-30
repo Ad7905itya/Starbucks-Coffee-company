@@ -1,8 +1,52 @@
 import jwt from "jsonwebtoken";
-import { User } from "../schema/userSchema.js";
-import { OTP } from "../schema/otpSchema.js";
+import AWS from "aws-sdk";
+import { User } from "../models/UserModel.js";
+import bcrypt from "bcrypt";
+import { OTP } from "../models/OtpModel.js";
 
-// Token banane ka helper
+const s3 = process.env.AWS_S3_BUCKET_NAME ? new AWS.S3({
+    region: process.env.AWS_REGION,
+    credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    },
+}) : null;
+
+const bucketName = process.env.AWS_S3_BUCKET_NAME;
+
+const getS3KeyFromUrl = (url) => {
+    try {
+        const parsed = new URL(url);
+        const hostname = parsed.hostname;
+        const pathname = parsed.pathname.replace(/^\//, '');
+        const regionHost = `s3.${process.env.AWS_REGION}.amazonaws.com`;
+        const globalHost = 's3.amazonaws.com';
+        const virtualHost = `${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com`;
+        const legacyVirtualHost = `${bucketName}.s3.amazonaws.com`;
+
+        if (hostname === virtualHost || hostname === legacyVirtualHost) {
+            return pathname;
+        }
+
+        if ((hostname === regionHost || hostname === globalHost) && pathname.startsWith(`${bucketName}/`)) {
+            return pathname.replace(`${bucketName}/`, '');
+        }
+
+        if (hostname.includes(`${bucketName}.s3`) && pathname) {
+            return pathname;
+        }
+
+        return null;
+    } catch {
+        return null;
+    }
+};
+
+const deleteS3Object = async (key) => {
+    if (!s3 || !bucketName || !key) return;
+    await s3.deleteObject({ Bucket: bucketName, Key: key }).promise();
+};
+
 const generateToken = (user) => {
     return jwt.sign(
         { _id: user._id, email: user.email },
@@ -11,9 +55,35 @@ const generateToken = (user) => {
     );
 };
 
+const mapUserForResponse = (user) => ({
+    _id: user._id,
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    FirstName: user.firstName,
+    LastName: user.lastName,
+    phone: user.phone,
+    birthDate: user.birthDate,
+    BirthDate: user.birthDate,
+    preferences: user.preferences,
+    profilePhoto: user.profilePhoto,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+});
+
+const setAuthCookie = (res, token) => {
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+};
+
 export const registerUser = async (req, res) => {
     try {
-        const { email, password, FirstName, LastName, phone, BirthDate, preferences } = req.body;
+        const { email, password, firstName, lastName, phone, birthDate, preferences } = req.body;
+
 
         if (!email || !password) {
             return res.status(400).json({ success: false, message: "Email and password required" });
@@ -24,32 +94,26 @@ export const registerUser = async (req, res) => {
             return res.status(400).json({ success: false, message: "User already exists" });
         }
 
-        const user = new User({ email, password, FirstName, LastName, phone, BirthDate, preferences });
-        await user.save();
+        const user = await User.create({
+            email,
+            password: await bcrypt.hash(password, 10),
+            firstName,
+            lastName,
+            phone,
+            birthDate: birthDate ? new Date(birthDate) : undefined,
+            preferences,
+            profilePhoto: ""
+        })
 
-        // ✅ JWT token banao
+
         const token = generateToken(user);
 
-        // ✅ Cookie mein set karo
-        res.cookie("token", token, {
-            httpOnly: true,      // JS se access nahi hoga — secure
-            secure: false,       // production mein true karna (HTTPS)
-            sameSite: "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000  // 7 din
-        });
+        setAuthCookie(res, token);
 
         return res.status(201).json({
             success: true,
             message: "User registered",
-            data: {
-                _id: user._id,
-                email: user.email,
-                FirstName: user.FirstName,
-                LastName: user.LastName,
-                phone: user.phone,
-                BirthDate: user.BirthDate,
-                preferences: user.preferences,
-            }
+            data: mapUserForResponse(user)
         });
     } catch (error) {
         return res.status(500).json({ success: false, message: "Registration failed", error: error.message });
@@ -69,34 +133,20 @@ export const loginUser = async (req, res) => {
             return res.status(401).json({ success: false, message: "Invalid credentials" });
         }
 
-        const isMatch = await user.matchPassword(password);
+        const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(401).json({ success: false, message: "Invalid credentials" });
         }
 
-        // ✅ JWT token banao
+
         const token = generateToken(user);
 
-        // ✅ Cookie mein set karo
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: false,
-            sameSite: "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        });
+        setAuthCookie(res, token);
 
         return res.status(200).json({
             success: true,
             message: "Login successful",
-            data: {
-                _id: user._id,
-                email: user.email,
-                FirstName: user.FirstName,
-                LastName: user.LastName,
-                phone: user.phone,
-                BirthDate: user.BirthDate,
-                preferences: user.preferences,
-            }
+            data: mapUserForResponse(user)
         });
     } catch (error) {
         return res.status(500).json({ success: false, message: "Login failed", error: error.message });
@@ -110,7 +160,7 @@ export const getMe = async (req, res) => {
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found" });
         }
-        return res.status(200).json({ success: true, data: user });
+        return res.status(200).json({ success: true, data: mapUserForResponse(user) });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }
@@ -118,49 +168,51 @@ export const getMe = async (req, res) => {
 
 export const updateUserProfile = async (req, res) => {
     try {
-        const { profilePhoto, FirstName, LastName, phone, BirthDate, preferences, otp } = req.body;
-
-        if (!otp) {
-            return res.status(400).json({ success: false, message: "OTP is required to confirm profile updates." });
-        }
+        const { profilePhoto, FirstName, LastName, phone, BirthDate, preferences } = req.body;
 
         const user = await User.findById(req.user._id);
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found" });
         }
 
-        const isValidOtp = await OTP.findOne({ email: user.email, otp });
-        if (!isValidOtp) {
-            return res.status(400).json({ success: false, message: "Invalid or expired OTP." });
+        // Parse BirthDate safely
+        const parsedBirthDate = BirthDate ? new Date(BirthDate) : user.birthDate;
+        if (BirthDate && Number.isNaN(parsedBirthDate.getTime())) {
+            return res.status(400).json({ success: false, message: "Invalid birth date format" });
         }
 
-        await OTP.deleteMany({ email: user.email });
+        const oldProfilePhoto = user.profilePhoto;
+        const isNewPhoto = profilePhoto && profilePhoto !== oldProfilePhoto;
 
+        // Update User details
         user.profilePhoto = profilePhoto || user.profilePhoto;
-        user.FirstName = FirstName || user.FirstName;
-        user.LastName = LastName || user.LastName;
+        user.firstName = FirstName || user.firstName;
+        user.lastName = LastName || user.lastName;
         user.phone = phone || user.phone;
-        user.BirthDate = BirthDate || user.BirthDate;
+        user.birthDate = parsedBirthDate;
         user.preferences = {
-            email: preferences?.email ?? user.preferences?.email,
-            sms: preferences?.sms ?? user.preferences?.sms,
+            email: preferences?.email ?? user.preferences?.email ?? false,
+            sms: preferences?.sms ?? user.preferences?.sms ?? false,
         };
 
         await user.save();
 
+        // Agar nayi photo upload hui hai toh puraani S3 se delete kar do
+        if (isNewPhoto && oldProfilePhoto) {
+            const oldKey = getS3KeyFromUrl(oldProfilePhoto);
+            if (oldKey) {
+                try {
+                    await deleteS3Object(oldKey);
+                } catch (deleteError) {
+                    console.error('Failed to delete old profile photo:', deleteError);
+                }
+            }
+        }
+
         return res.status(200).json({
             success: true,
             message: "Profile updated successfully",
-            data: {
-                _id: user._id,
-                email: user.email,
-                FirstName: user.FirstName,
-                LastName: user.LastName,
-                phone: user.phone,
-                BirthDate: user.BirthDate,
-                preferences: user.preferences,
-                profilePhoto: user.profilePhoto,
-            }
+            data: mapUserForResponse(user)
         });
     } catch (error) {
         return res.status(500).json({ success: false, message: "Profile update failed", error: error.message });

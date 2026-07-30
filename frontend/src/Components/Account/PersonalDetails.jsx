@@ -15,112 +15,97 @@ const PersonalDetails = () => {
     const { setUser } = useAuth();
     const [CalenderOpen, setCalenderOpen] = useState(false);
     const [calendarValue, setCalendarValue] = useState("");
-    const [SubmitBtn, setSubmitBtn] = useState({ FirstName: "", LastName: "", BirthDate: "" });
-    const [errors, setErrors] = useState({ firstName: '', lastName: '', BirthDate: "" });
+    const [errors, setErrors] = useState({ firstName: '', lastName: '', birthDate: "" });
     const [Data] = useSessionStorage('CreateSubmitData');
     const [CheckBoxValue, setCheckBoxValue] = useState({});
-    const [PersonalData, setPersonalData] = useState({
+    const [personalData, setPersonalData] = useState({
         firstName: "",
         lastName: "",
-        BirthDate: "",
+        birthDate: "",
     });
     const [registering, setRegistering] = useState(false);
     const [regError, setRegError] = useState("");
 
     let now = new Date();
 
+    const validateName = (field, value) => {
+        const trimmedValue = value.trim();
+        const label = field === 'firstName' ? 'First' : 'Last';
+
+        if (!trimmedValue) {
+            return `${label} name is required!`;
+        }
+        if (!/^[a-zA-Z]+$/.test(trimmedValue)) {
+            return 'Numbers & Special characters are not allowed. Please try again.';
+        }
+        if (trimmedValue.length < 3) {
+            return `Your ${label} Name is Short`;
+        }
+        return '';
+    };
+
+    const handleNameChange = (field) => (e) => {
+        const value = e.target.value;
+        const errorMessage = validateName(field, value);
+        setPersonalData((prev) => ({ ...prev, [field]: value }));
+        setErrors((prev) => ({ ...prev, [field]: errorMessage }));
+    };
+
+    const formatDateForDisplay = (date) => {
+        const dd = String(date.getDate()).padStart(2, '0');
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const yyyy = date.getFullYear();
+        return `${dd}/${mm}/${yyyy}`;
+    };
+
+    const formatDateForServer = (date) => {
+        const dd = String(date.getDate()).padStart(2, '0');
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const yyyy = date.getFullYear();
+        return `${mm}/${dd}/${yyyy}`;
+    };
+
+    const handleCalendarSelect = (date) => {
+        const displayValue = formatDateForDisplay(date);
+        const serverValue = formatDateForServer(date);
+        setCalendarValue(displayValue);
+        setPersonalData((prev) => ({ ...prev, birthDate: serverValue }));
+        setErrors((prev) => ({ ...prev, birthDate: '' }));
+    };
+
     useEffect(() => {
-        if (calendarValue) {
-            setCalenderOpen(false);
-        }
-    }, [calendarValue])
+        const handleWindowClick = () => {
+            if (CalenderOpen) {
+                setCalenderOpen(false);
+            }
+        };
 
-    document.onclick = () => {
-        if (CalenderOpen) {
-            setCalenderOpen(false);
-        }
-    }
+        window.addEventListener('click', handleWindowClick);
+        return () => {
+            window.removeEventListener('click', handleWindowClick);
+        };
+    }, [CalenderOpen]);
 
-    const onFirstNameBlur = (e) => {
-        const inputValue = e.target.value
-        let isAlphabetic = /^[a-zA-Z]*$/g.test(inputValue);
-        if (!inputValue) {
-            errors.firstName = "First name is required!";
-        } else if (inputValue && !isAlphabetic) {
-            errors.firstName = "Numbers & Special characters are not allowed. Please try again.";
-        } else if (inputValue && inputValue.length < 3) {
-            errors.firstName = "your First Name is Short";
-        } else {
-            errors.firstName = ""
-        }
-
-        if (inputValue && !errors.firstName) {
-            setSubmitBtn({ ...SubmitBtn, FirstName: inputValue });
-        } else {
-            setSubmitBtn({ ...SubmitBtn, FirstName: "" });
-        }
-
-        setPersonalData(prev => ({ ...prev, firstName: inputValue }))
-        setErrors({ ...errors });
-    }
-
-    const onLastNameBlur = (e) => {
-        const inputValue = e.target.value
-        let isAlphabetic = /^[a-zA-Z]*$/g.test(inputValue);
-        if (!inputValue) {
-            errors.lastName = "Last name is required!";
-        } else if (inputValue && !isAlphabetic) {
-            errors.lastName = "Numbers & Special characters are not allowed. Please try again.";
-        } else if (inputValue && inputValue.length < 3) {
-            errors.lastName = "your Last Name is Short";
-        } else {
-            errors.lastName = ""
-        }
-
-        if (inputValue && !errors.lastName) {
-            setSubmitBtn({ ...SubmitBtn, LastName: inputValue });
-        } else {
-            setSubmitBtn({ ...SubmitBtn, LastName: "" });
-        }
-
-        setPersonalData(prev => ({ ...prev, lastName: inputValue }))
-        setErrors({ ...errors });
-    }
-
-    const onChangeBirth = (e) => {
-        if (!calendarValue) {
-            errors.BirthDate = "Please select date";
-        } else {
-            errors.BirthDate = ""
-        }
-
-        if (calendarValue && !errors.BirthDate) {
-            setSubmitBtn({ ...SubmitBtn, BirthDate: calendarValue });
-        } else {
-            setSubmitBtn({ ...SubmitBtn, BirthDate: "" });
-        }
-
-        setErrors({ ...errors });
-    }
+    const isFormValid = personalData.firstName && personalData.lastName && personalData.birthDate && !errors.firstName && !errors.lastName && !errors.birthDate;
 
     const onClick = (e) => {
-        e.stopPropagation()
+        e.stopPropagation();
         setCalenderOpen(true);
     };
 
     const onCheckBoxValue = (e) => {
-        const { name, checked } = e.target
-        setCheckBoxValue(prev => ({
+        const { name, checked } = e.target;
+        setCheckBoxValue((prev) => ({
             ...prev,
-            [name]: checked
+            [name]: checked,
         }));
-    }
+    };
 
     const handleRegister = async () => {
         setRegistering(true);
         setRegError("");
         try {
-            const res = await fetch("/api/auth/register", {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/register`, {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
@@ -128,9 +113,9 @@ const PersonalDetails = () => {
                     email: Data?.email || "",
                     password: Data?.Password || "",
                     phone: Data?.number || "",
-                    FirstName: SubmitBtn.FirstName,
-                    LastName: SubmitBtn.LastName,
-                    BirthDate: SubmitBtn.BirthDate,
+                    firstName: personalData.firstName,
+                    lastName: personalData.lastName,
+                    birthDate: personalData.birthDate,
                     preferences: {
                         email: CheckBoxValue?.firstValue || false,
                         sms: CheckBoxValue?.lastValue || false,
@@ -146,7 +131,7 @@ const PersonalDetails = () => {
                 setRegError(result.message || "Registration failed");
             }
         } catch {
-            setRegError("Network error. Dobara koshish karo.");
+            setRegError("Network error. Try Again Later!");
         } finally {
             setRegistering(false);
         }
@@ -171,15 +156,15 @@ const PersonalDetails = () => {
             </section>
             <section className='m-auto px-10 xl:px-0 max-w-[1240px]'>
                 <form className='relative w-[80%]' onSubmit={(e) => e.preventDefault()}>
-                    <LoginInput
+                            <LoginInput
                         Header="FIRST NAME"
                         ParentClass="mt-4"
                         name="firstName"
                         id="firstName"
-                        myValue={PersonalData.firstName}
-                        onChange={onFirstNameBlur}
-                        onBlur={onFirstNameBlur}
-                        onInput={onFirstNameBlur}
+                        myValue={personalData.firstName}
+                        onChange={handleNameChange('firstName')}
+                        onBlur={handleNameChange('firstName')}
+                        onInput={handleNameChange('firstName')}
                         errors={errors.firstName}
                         type="text"
                         placeholder="Enter First Name"
@@ -190,11 +175,11 @@ const PersonalDetails = () => {
                         ParentClass="mt-4"
                         id="lastName"
                         type="text"
-                        onBlur={onLastNameBlur}
-                        onInput={onLastNameBlur}
+                        onChange={handleNameChange('lastName')}
+                        onBlur={handleNameChange('lastName')}
+                        onInput={handleNameChange('lastName')}
                         errors={errors.lastName}
-                        myValue={PersonalData.lastName}
-                        onChange={onLastNameBlur}
+                        myValue={personalData.lastName}
                         placeholder="Enter Last Name"
                     />
                     <LoginInput
@@ -205,18 +190,18 @@ const PersonalDetails = () => {
                         type="text"
                         placeholder="DD-MM-YYYY *"
                         myValue={calendarValue}
-                        onChange={onChangeBirth}
-                        onFocus={onChangeBirth}
-                        errors={errors.BirthDate}
+                        onFocus={onClick}
+                        errors={errors.birthDate}
                         Calendar={onClick}
                         BirthDate={true}
+                        readOnly
                     />
                     {CalenderOpen && (
                         <div onClick={(e) => e.stopPropagation()} className='-top-32 z-20 absolute bg-white shadow-4xl p-3 rounded-xl w-80'>
                             <Calendar
                                 value={new Date(now.getFullYear() - 18, now.getMonth(), now.getDate())}
                                 maxDate={new Date(now.getFullYear() - 18, now.getMonth(), now.getDate())}
-                                onChange={(e) => setCalendarValue(new Date(e).toLocaleDateString())}
+                                onChange={handleCalendarSelect}
                             />
                         </div>
                     )}
@@ -259,7 +244,7 @@ const PersonalDetails = () => {
                 </p>
 
                 <div className='flex justify-center mt-14 mb-20'>
-                    {Object.values(SubmitBtn).every((item) => item) ? (
+                    {isFormValid ? (
                         <button
                             onClick={handleRegister}
                             disabled={registering}

@@ -56,7 +56,7 @@ const ProfileUser = () => {
                                             style={{
                                                 backgroundImage: `url(${user?.profilePhoto || 'https://www.starbucks.in/assets/images/profileDP.svg'})`,
                                             }}
-                                            className='relative bg-contain bg-no-repeat bg-center border-[6px] border-white rounded-full w-full h-full'
+                                            className='relative bg-cover bg-no-repeat bg-center border-[6px] border-white rounded-full w-full h-full'
                                         >
                                             {user ? (
                                                 <button

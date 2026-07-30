@@ -4,4 +4,4 @@ export const handcraftSchema = new mongoose.Schema({
     image: String,
     mainCategory: String,
     subCategory: String,
-}, { timestamps: true });
+}, { timestamps: true, strict: true });

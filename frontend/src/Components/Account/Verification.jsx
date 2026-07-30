@@ -38,7 +38,7 @@ const Verification = () => {
     // ─── OTP send (mount + resend dono ke liye) ───────────────────────────────
     const sendOTP = async () => {
         try {
-            const res = await fetch("/api/otp/send", {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/otp/send`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -83,7 +83,7 @@ const Verification = () => {
         setLoading(true);
         try {
             // ✅ Sirf OTP verify karo
-            const verifyRes = await fetch("/api/otp/verify", {
+            const verifyRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/otp/verify`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

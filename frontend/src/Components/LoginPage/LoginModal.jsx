@@ -3,7 +3,6 @@ import LoginInput from './LoginInput'
 import "./Login.css"
 import { Link, useLocation } from 'react-router-dom'
 import { createPortal } from 'react-dom'
-import { loginUserAPI } from '../../Hooks/authAPI'
 import { useAuth } from '../../Hooks/useAuth'
 
 const LoginModal = ({ setOpen }) => {
@@ -26,10 +25,16 @@ const LoginModal = ({ setOpen }) => {
     const onSubmit = async (e) => {
         e.preventDefault();
         if (!SubmitData) return;
-        
+
         setIsLoggingIn(true);
-        const result = await loginUserAPI(Username, Data.password);
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/login`, {
+            method: "POST",
+            credentials: 'include',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: Data.username, password: Data.password })
+        });
         
+        const result = await res.json();
         if (result.success) {
             setUser(result.data);
             setOpen(false);

@@ -3,27 +3,29 @@ import { ConfigProvider, Modal, Checkbox } from 'antd'
 import { useAuth } from '../../Hooks/useAuth'
 
 const defaultAvatar = 'https://www.starbucks.in/assets/images/profileDP.svg'
+const MAX_FILE_SIZE = 500 * 1024; // 500 KB
 
-// Convert date format from "MM/DD/YYYY" to "yyyy-MM-dd"
-const convertToDateInputFormat = (dateStr) => {
+const normalizeDateInput = (dateStr) => {
   if (!dateStr) return ''
-  const parts = dateStr.split('/')
+  const trimmed = String(dateStr).trim()
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed
+
+  const parts = trimmed.split('/')
   if (parts.length === 3) {
     const [month, day, year] = parts
     return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
   }
-  return dateStr
+  return trimmed
 }
 
-// Convert date format from "yyyy-MM-dd" to "MM/DD/YYYY"
 const convertFromDateInputFormat = (dateStr) => {
   if (!dateStr) return ''
-  const parts = dateStr.split('-')
-  if (parts.length === 3) {
-    const [year, month, day] = parts
+  const trimmed = String(dateStr).trim()
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+    const [year, month, day] = trimmed.split('-')
     return `${month}/${day}/${year}`
   }
-  return dateStr
+  return trimmed
 }
 
 const EditProfileModal = ({ open, onClose, onSaved }) => {
@@ -35,19 +37,13 @@ const EditProfileModal = ({ open, onClose, onSaved }) => {
     phone: '',
     BirthDate: '',
     email: '',
-    preferences: {
-      email: false,
-      sms: false,
-    },
-    otp: '',
+    preferences: { email: false, sms: false }
   })
-  const [otpSent, setOtpSent] = useState(false)
+
   const [statusMessage, setStatusMessage] = useState('')
   const [saving, setSaving] = useState(false)
-  const [sendingOtp, setSendingOtp] = useState(false)
-  const [nextStep, setNextStep] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [uploadProgress, setUploadProgress] = useState(0)
 
   useEffect(() => {
     if (!user) return
@@ -56,16 +52,17 @@ const EditProfileModal = ({ open, onClose, onSaved }) => {
       FirstName: user.FirstName || '',
       LastName: user.LastName || '',
       phone: user.phone || '',
-      BirthDate: convertToDateInputFormat(user.BirthDate) || '',
+      BirthDate: normalizeDateInput(user.BirthDate) || '',
       email: user.email || '',
       preferences: {
         email: !!user.preferences?.email,
         sms: !!user.preferences?.sms,
-      },
-      otp: '',
+      }
     })
     setStatusMessage('')
-    setOtpSent(false)
+    setSelectedFile(null)
+    setUploadProgress(0)
+    setSaving(false)
   }, [user, open])
 
   const handleChange = (field, value) => {
@@ -76,113 +73,38 @@ const EditProfileModal = ({ open, onClose, onSaved }) => {
     }
   }
 
-  const handleSendOtp = async () => {
-    if (!user?.email) return
-    setSendingOtp(true)
-    setStatusMessage('Sending OTP...')
-    try {
-      const response = await fetch('/api/otp/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: user.email, phone: user.phone }),
-      })
-      const result = await response.json()
-      if (result.success) {
-        setOtpSent(true)
-        setStatusMessage('OTP sent to your registered email/phone. Enter it below to confirm changes.')
-      } else {
-        setStatusMessage(result.message || 'Unable to send OTP. Please try again.')
-      }
-    } catch (error) {
-      setStatusMessage('OTP request failed. Please try again.')
-    } finally {
-      setSendingOtp(false)
-      setNextStep(true);
-    }
-  }
-
-  const handleSave = async () => {
-    if (!form.otp) {
-      setStatusMessage('Please confirm changes with the OTP before saving.')
-      return
-    }
-
-    setSaving(true)
-    setStatusMessage('Updating profile...')
-    try {
-      let profileUrl = form.profilePhoto;
-      
-      // If a file was selected, upload it first
-      if (selectedFile) {
-        try {
-          setStatusMessage('Uploading image in chunks...')
-          const uploaded = await uploadFileInChunks(selectedFile, (progress) => setUploadProgress(progress));
-          if (uploaded?.success && uploaded?.url) {
-            profileUrl = uploaded.url;
-            setStatusMessage('Image uploaded. Saving profile...')
-          } else {
-            throw new Error('Upload response missing URL');
-          }
-        } catch (uploadError) {
-          setStatusMessage(`Image upload failed: ${uploadError.message}. Proceeding without image.`)
-          profileUrl = form.profilePhoto; // fallback to previous URL
-        }
-      }
-
-      const response = await fetch('/api/auth/profile', {
-        method: 'PUT',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          profilePhoto: profileUrl,
-          FirstName: form.FirstName,
-          LastName: form.LastName,
-          phone: form.phone,
-          BirthDate: convertFromDateInputFormat(form.BirthDate),
-          preferences: form.preferences,
-          otp: form.otp,
-        }),
-      })
-      const result = await response.json()
-      if (result.success) {
-        setUser(result.data)
-        onSaved(result.data)
-        setStatusMessage('Profile updated successfully.')
-        onClose()
-      } else {
-        setStatusMessage(result.message || 'Could not update profile. Please check OTP and try again.')
-      }
-    } catch (error) {
-      console.error('Profile update error:', error);
-      setStatusMessage('Profile update failed. Please try again.')
-    } finally {
-      setSaving(false)
-    }
-  }
-
   const ImageHandler = (e) => {
     e.preventDefault()
     const file = e.target.files[0]
     if (file) {
-      setSelectedFile(file);
-      // preview
-      const previewUrl = URL.createObjectURL(file);
-      handleChange('profilePhoto', previewUrl);
+      if (file.size > MAX_FILE_SIZE) {
+        setSelectedFile(null)
+        setStatusMessage('Image must be 500KB or smaller.')
+        return
+      }
+
+      setSelectedFile(file)
+      setStatusMessage('')
+      const previewUrl = URL.createObjectURL(file)
+      handleChange('profilePhoto', previewUrl)
     }
   }
 
   const uploadFileInChunks = async (file, onProgress) => {
     const chunkSize = 1024 * 1024; // 1MB
     const totalChunks = Math.ceil(file.size / chunkSize);
-    const uploadId = (crypto && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const uploadId = (crypto && crypto.randomUUID) 
+      ? crypto.randomUUID() 
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
     for (let i = 0; i < totalChunks; i++) {
       const start = i * chunkSize;
       const end = Math.min(start + chunkSize, file.size);
       const chunk = file.slice(start, end);
 
-      const res = await fetch('/api/uploads/chunk', {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/uploads/chunk`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/octet-stream',
           'Upload-Id': uploadId,
@@ -197,8 +119,9 @@ const EditProfileModal = ({ open, onClose, onSaved }) => {
       onProgress && onProgress(progress);
     }
 
-    const completeRes = await fetch('/api/uploads/complete', {
+    const completeRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/uploads/complete`, {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ uploadId, fileName: file.name, totalChunks }),
     });
@@ -207,25 +130,107 @@ const EditProfileModal = ({ open, onClose, onSaved }) => {
       const errorData = await completeRes.json();
       throw new Error(errorData.message || 'Complete upload failed');
     }
-    
+
     const result = await completeRes.json();
     if (result.success && result.url) {
-      return result; // returns { success: true, url: '...' }
+      return result;
     } else {
       throw new Error('Upload completion returned invalid response');
     }
   }
 
+  const executeProfileUpdate = async () => {
+    setSaving(true)
+    setStatusMessage('Updating profile...')
+    try {
+      const originalPhoto = user?.profilePhoto || '';
+      let profileUrl = form.profilePhoto;
+
+      if (selectedFile) {
+        if (selectedFile.size > MAX_FILE_SIZE) {
+          setStatusMessage('Image must be 500KB or smaller.')
+          setSaving(false)
+          return
+        }
+
+        try {
+          setStatusMessage('Uploading image...')
+          const uploaded = await uploadFileInChunks(selectedFile, (progress) => setUploadProgress(progress));
+          if (uploaded?.success && uploaded?.url) {
+            profileUrl = uploaded.url;
+            handleChange('profilePhoto', uploaded.url);
+          } else {
+            throw new Error('Upload response missing URL');
+          }
+        } catch (uploadError) {
+          console.error("Chunk Upload Error:", uploadError);
+          setStatusMessage(`Image upload failed: ${uploadError.message}. keeping existing image.`)
+          profileUrl = originalPhoto
+        }
+      }
+
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/profile`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          profilePhoto: profileUrl,
+          FirstName: form.FirstName,
+          LastName: form.LastName,
+          phone: form.phone,
+          BirthDate: convertFromDateInputFormat(form.BirthDate),
+          preferences: form.preferences,
+        }),
+      })
+
+      const result = await response.json()
+
+      if (response.ok && result.success) {
+        const updatedUser = result.data || result.user || form;
+        setUser(updatedUser)
+        if (onSaved) onSaved(updatedUser)
+        
+        setStatusMessage('Profile updated successfully!')
+        
+        // Modal close karne ka timing fix
+        setTimeout(() => {
+          setSaving(false)
+          onClose()
+        }, 500)
+      } else {
+        setStatusMessage(result.message || 'Could not update profile. Try again.')
+        setSaving(false)
+      }
+    } catch (error) {
+      console.error('Profile update error:', error);
+      setStatusMessage('Profile update failed. Please try again.')
+      setSaving(false)
+    }
+  }
+
+  const handleSaveClick = () => {
+    Modal.confirm({
+      title: 'Update Profile Details?',
+      content: 'Are you sure you want to update your profile details and photo?',
+      okText: 'Yes, Update',
+      cancelText: 'Cancel',
+      okButtonProps: { style: { backgroundColor: '#00754a', borderColor: '#00754a' } },
+      onOk() {
+        executeProfileUpdate()
+      },
+    })
+  }
+
   return (
     <ConfigProvider theme={{ cssVar: true }}>
-      <Modal open={open} onCancel={onClose} footer={false} width={700} closeIcon>
-        <div className='space-y-8 space-x-3 p-5'>
-          {!nextStep && <div className='flex items-center flex-col justify-center gap-4 py-5'>
-            <label htmlFor="image">
+      <Modal open={open} onCancel={onClose} footer={false} width={700} destroyOnClose>
+        <div className='space-y-6 p-4'>
+          <div className='flex items-center flex-col justify-center gap-4 py-2'>
+            <label htmlFor="image" className="relative group cursor-pointer">
               <img
                 src={form.profilePhoto || defaultAvatar}
                 alt='Profile'
-                className='w-28 cursor-pointer hover:opacity-40 h-28 flex justify-center items-center rounded-full object-cover border border-gray-200'
+                className='w-28 h-28 rounded-full object-cover border border-gray-200 group-hover:opacity-60 transition'
               />
               <input hidden type="file" id="image" accept="image/*" onChange={ImageHandler} />
             </label>
@@ -233,117 +238,105 @@ const EditProfileModal = ({ open, onClose, onSaved }) => {
               <h2 className='text-xl font-bold'>Edit Profile</h2>
               <p className='text-sm text-gray-500'>Update your name, phone, birthdate, and photo.</p>
             </div>
-          </div>}
+          </div>
 
-          {!nextStep && <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-            <label className='space-y-2'>
-              <span className='font-semibold'>First name</span>
+          <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+            <label className='space-y-1 block'>
+              <span className='font-semibold text-sm'>First name</span>
               <input
                 value={form.FirstName}
                 onChange={(e) => handleChange('FirstName', e.target.value)}
-                className='w-full rounded-lg border px-4 py-2 outline-none'
+                className='w-full rounded-lg border px-4 py-2 outline-none focus:border-[#00754a]'
               />
             </label>
-            <label className='space-y-2'>
-              <span className='font-semibold'>Last name</span>
+            <label className='space-y-1 block'>
+              <span className='font-semibold text-sm'>Last name</span>
               <input
                 value={form.LastName}
                 onChange={(e) => handleChange('LastName', e.target.value)}
-                className='w-full rounded-lg border px-4 py-2 outline-none'
+                className='w-full rounded-lg border px-4 py-2 outline-none focus:border-[#00754a]'
               />
             </label>
-          </div>}
+          </div>
 
-          {!nextStep && <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-            <label className='space-y-2'>
-              <span className='font-semibold'>Phone</span>
+          <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+            <label className='space-y-1 block'>
+              <span className='font-semibold text-sm'>Phone</span>
               <input
                 value={form.phone}
                 onChange={(e) => handleChange('phone', e.target.value)}
-                className='w-full rounded-lg border px-4 py-2 outline-none'
+                className='w-full rounded-lg border px-4 py-2 outline-none focus:border-[#00754a]'
                 type='tel'
               />
             </label>
-            <label className='space-y-2'>
-              <span className='font-semibold'>Birthday</span>
+            <label className='space-y-1 block'>
+              <span className='font-semibold text-sm'>Birthday</span>
               <input
                 value={form.BirthDate}
                 onChange={(e) => handleChange('BirthDate', e.target.value)}
-                className='w-full rounded-lg border px-4 py-2 outline-none'
+                className='w-full rounded-lg border px-4 py-2 outline-none focus:border-[#00754a]'
                 type='date'
               />
             </label>
-          </div>}
+          </div>
 
-          {!nextStep && <label className='space-y-2'>
-            <span className='font-semibold'>Email</span>
+          <label className='space-y-1 block'>
+            <span className='font-semibold text-sm'>Email</span>
             <input
               value={form.email}
               disabled
-              className='w-full rounded-lg border bg-gray-100 px-4 py-2 outline-none'
+              className='w-full rounded-lg border bg-gray-100 px-4 py-2 outline-none text-gray-500 cursor-not-allowed'
             />
-          </label>}
+          </label>
 
-          {!nextStep && <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-            <label className='flex items-center gap-2'>
+          <div className='grid grid-cols-1 gap-4 md:grid-cols-2 pt-2'>
+            <label className='flex items-center gap-2 cursor-pointer'>
               <Checkbox
                 checked={form.preferences.email}
                 onChange={(e) => handleChange('preferences', { email: e.target.checked })}
               />
-              <span>Email updates</span>
+              <span className='text-sm'>Email updates</span>
             </label>
-            <label className='flex items-center gap-2'>
+            <label className='flex items-center gap-2 cursor-pointer'>
               <Checkbox
                 checked={form.preferences.sms}
                 onChange={(e) => handleChange('preferences', { sms: e.target.checked })}
               />
-              <span>SMS updates</span>
+              <span className='text-sm'>SMS updates</span>
             </label>
-          </div>}
-
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-[1fr_auto]'>
-            {!nextStep ? <button
-              onClick={handleSendOtp}
-              disabled={sendingOtp}
-              className='rounded-3xl bg-[#00754a] px-6 py-3 text-white transition hover:bg-[#005d3d] disabled:opacity-60'
-            >
-              {sendingOtp ? 'Sending OTP...' : otpSent ? 'Resend OTP' : 'Send OTP'}
-            </button> :
-              <label className='space-y-2'>
-                <span className='font-semibold'>OTP</span>
-                <input
-                  value={form.otp}
-                  onChange={(e) => handleChange('otp', e.target.value)}
-                  className='w-full rounded-lg border px-4 py-2 outline-none'
-                  placeholder='Enter OTP'
-                />
-              </label>}
           </div>
 
-          {statusMessage && <p className='text-sm text-[#333]'>{statusMessage}</p>}
+          {/* Status Message Display */}
+          {statusMessage && (
+            <div className='text-center'>
+              <p className={`text-sm font-medium ${statusMessage.includes('failed') || statusMessage.includes('smaller') || statusMessage.includes('required') ? 'text-red-500' : 'text-[#00754a]'}`}>
+                {statusMessage}
+              </p>
+              {saving && uploadProgress > 0 && uploadProgress < 100 && (
+                <div className="w-full bg-gray-200 rounded-full h-1.5 mt-2">
+                  <div className="bg-[#00754a] h-1.5 rounded-full transition-all duration-300" style={{ width: `${uploadProgress}%` }}></div>
+                </div>
+              )}
+            </div>
+          )}
 
-          {nextStep && <div className='flex justify-end gap-3'>
+          <div className='flex justify-between gap-3 items-center pt-2'>
             <button
-              onClick={() => {
-                setNextStep(false);
-                setStatusMessage('');
-                setOtpSent(false);
-                setSaving(false);
-                setSendingOtp(false);
-                onClose();
-              }}
-              className='rounded-3xl border border-[#ccc] px-6 py-3 font-semibold'
+              type="button"
+              onClick={onClose}
+              className='rounded-3xl grow border border-[#ccc] px-6 py-2.5 font-semibold text-gray-700 hover:bg-gray-50 transition'
             >
               Cancel
             </button>
             <button
-              onClick={handleSave}
+              type="button"
+              onClick={handleSaveClick}
               disabled={saving}
-              className='rounded-3xl bg-[#00754a] px-6 py-3 text-white transition hover:bg-[#005d3d] disabled:opacity-60'
+              className='rounded-3xl grow bg-[#00754a] px-6 py-2.5 text-white font-semibold transition hover:bg-[#005d3d] disabled:opacity-60'
             >
               {saving ? 'Updating...' : 'Save Changes'}
             </button>
-          </div>}
+          </div>
         </div>
       </Modal>
     </ConfigProvider>

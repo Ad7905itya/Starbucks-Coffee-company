@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { genericSchema } from "../schema/genericSchema.js";
+import dns from "dns";
+
 
 dotenv.config();
 
@@ -11,6 +13,7 @@ if (!MONGO_URI) {
   process.exit(1);
 }
 
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 mongoose.connect(MONGO_URI);
 
 mongoose.connection.on("connected", () => {

@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
   const refreshUser = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/auth/me', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/me`, {
         credentials: 'include',
       });
       const data = await response.json();
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await fetch('/api/auth/logout', {
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include',
       });

@@ -1,6 +1,6 @@
 export const fetchData = async (resource) => {
     try {
-        const response = await fetch(`/api/${resource}`);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/${resource}`);
         const json = await response.json();
         return json?.data ?? [];
     } catch (error) {
