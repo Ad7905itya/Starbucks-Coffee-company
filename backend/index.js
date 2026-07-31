@@ -9,9 +9,9 @@ const __dirname = path.dirname(__filename);
 
 import "./connectDB/connectDb.js";
 import otpRoutes from "./Routes/otpRoutes.js";
+import dataRoutes from "./Routes/dataRoutes.js";
 import uploadRoutes from "./Routes/uploadRoutes.js";
 import userRoutes from "./Routes/userRoutes.js";
-import { getData } from "./Routes/dataRoutes.js";
 import cookieParser from "cookie-parser";
 import { protect } from "./middleware/authMiddleware.js";
 import { getMe, logoutUser, updateUserProfile } from "./controllers/userController.js";
@@ -23,9 +23,9 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 const allowedOrigins = [
-    process.env.CLIENT_ORIGIN, 
-    "http://localhost:3000", 
-    "http://localhost:5173", 
+    process.env.CLIENT_ORIGIN,
+    "http://localhost:3000",
+    "http://localhost:5173",
     "https://starbuckclone1.netlify.app/"
 ].filter(Boolean);
 
@@ -49,9 +49,7 @@ app.put("/api/auth/profile", protect, updateUserProfile);
 app.use("/api/otp", otpRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/uploads', uploadRoutes);
-
-
-app.get("/api/:dataset", getData);
+app.use("/api", dataRoutes);
 
 app.get("/health", (req, res) => {
     res.status(200).json({ message: "Server is running" });
