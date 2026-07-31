@@ -26,7 +26,7 @@ const allowedOrigins = [
     process.env.CLIENT_ORIGIN,
     "http://localhost:3000",
     "http://localhost:5173",
-    "https://starbuckclone1.netlify.app/"
+    "https://starbuckclone1.netlify.app"
 ].filter(Boolean);
 
 app.use(cors({
